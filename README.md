@@ -43,6 +43,7 @@ For the correct operation of RedOps, the following requirements are necessary.
 | npm | https://www.npmjs.com/ |
 | Python 3.x | https://www.python.org/ |
 
+Also, you can see our [Wiki][WK]. 
 
 License
 ----
@@ -50,6 +51,7 @@ License
 **GNU General Public License v3.0** - [LICENSE][LS]
 
 [LS]: <https://github.com/Inno-SVQ/RedOps/blob/master/LICENSE>
+[WK]: <https://github.com/Inno-SVQ/RedOps/wiki>
 
 
 
