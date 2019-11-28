@@ -18,6 +18,8 @@ class CreateWebTechnologiesTable extends Migration
             $table->uuid('service_id');
             $table->string('name');
             $table->string('icon');
+            $table->uuid('from_job_id');
+            $table->unique(['name', 'service_id']);
             $table->timestamps();
         });
     }

@@ -25,7 +25,6 @@ class WebTechnology
 
     public function toEloquent() {
         $new = new \App\WebTechnology();
-        $new->id = $this->id;
         $new->name = $this->name;
         $new->icon = $this->icon;
         $new->service_id = $this->service_id;
