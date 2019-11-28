@@ -3,7 +3,6 @@ import shodan
 import socket
 import ipaddress
 import time
-from getpass import getpass
 from modules.Generics.Service import Service
 from modules.Generics.Domain import Domain
 from modules.Generics.IP import IP
