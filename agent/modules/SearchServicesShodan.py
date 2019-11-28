@@ -1,8 +1,12 @@
 
 import shodan
 import socket
+import ipaddress
+import time
 from getpass import getpass
 from modules.Generics.Service import Service
+from modules.Generics.Domain import Domain
+from modules.Generics.IP import IP
 from modules.Generics.BaseModule import BaseModule
 
 class Module(BaseModule):
@@ -10,17 +14,23 @@ class Module(BaseModule):
         data = self.params["data"]
         api_key = self.params["api_key"]
 
-        shodanObj = Shodan(api_key)
-        for d in data:
-            print(d)
-        for index, domain in enumerate(data):
+        shodanObj = Shodan(api_key, callback)
 
-            ips=shodanObj.resDomain(domain.name)
+        for index, domain in enumerate(data):
+            if type(domain) == Domain:
+                ips=shodanObj.resDomain(domain.name)
+
+            elif type(domain) == IP:
+                ips=domain.value
+
             res=shodanObj.searchServices(ips)
+
             jsonStr=[]
 
             for i in res:
                 jsonStr.append(i)
+
+            time.sleep(1)
 
             # In the last loop we want to finish the task in the server
             if(index < len(self.params) - 1):
@@ -29,33 +39,36 @@ class Module(BaseModule):
         callback.finish(jsonStr)
 
 class Shodan():
-    def __init__(self,api):
+    def __init__(self,api,callback):
         self.api=shodan.Shodan(api)
+        self.callback = callback
 
-    def resDomain(self,domains):
-        ip=[]
+    def resDomain(self,domain):
         try:
-            for domain in domains:
-                ip.append(socket.gethostbyname(domain))
+            ip=socket.gethostbyname(domain)
+
+            try:
+                ipaddress.IPv4Address(ip)
+            except ValueError:
+                pass
 
         except socket.gaierror as e:
-            ip.append(None)
+            pass
 
         return ip
 
-    def searchServices(self,ips):
+    def searchServices(self,ip):
         list=[]
 
         try:
-            for ip in ips:
-                host = self.api.host(ip)
+            host = self.api.host(ip)
 
-                r=host.get("data")
-
-                for item in host['data']:
-                    list.append(Service(ip,item['port'],item['transport'],r[1]["product"],None,None))
+            r=host.get("data")
+            
+            for item in host['data']:
+                list.append(Service(ip,item['port'],item['transport'],r[1]["product"],None,None))
 
         except Exception as e:
-            print('Error: {}'.format(e))
+            self.callback.exception(e)
 
         return list
