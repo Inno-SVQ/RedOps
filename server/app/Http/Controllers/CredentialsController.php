@@ -30,7 +30,7 @@ class CredentialsController extends Controller
 
         $credentials = DB::table('credentials')
             ->whereIn('audit_id', $selectedAudit)
-            ->select(['id', 'username', 'password', 'domain']);
+            ->select(['id', 'username', 'password', 'domain', 'source']);
 
         return Datatables::of($credentials)
             ->addColumn('checkbox', function ($credential) {

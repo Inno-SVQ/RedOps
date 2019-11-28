@@ -102,6 +102,8 @@
                         <th><input type="checkbox" id="checkbox-all" aria-label="..."></th>
                         <th>Username</th>
                         <th>Password</th>
+                        <th>Domain</th>
+                        <th>Source</th>
                     </tr>
                     </thead>
                 </table>
@@ -174,11 +176,13 @@
                             columns: [
                                 {data: "checkbox", name: "checkbox", orderable: false, searchable: false},
                                 {data: "username", name: "username"},
-                                {data: "password", name: "password"}
+                                {data: "password", name: "password"},
+                                {data: "domain", name: "domain"},
+                                {data: "source", name: "source"}
                             ],
                             aoColumnDefs: [
-                                {'bSortable': true, 'aTargets': [1, 2]},
-                                {'bSearchable': true, 'aTargets': [1, 2]}
+                                {'bSortable': true, 'aTargets': [1, 2, 3, 4]},
+                                {'bSearchable': true, 'aTargets': [1, 2, 3, 4]}
                             ],
                             drawCallback: function () {
                                 for (i = 0; i < selectedItems.length; i++) {
