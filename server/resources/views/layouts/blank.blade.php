@@ -123,6 +123,10 @@
                 $('#datatable-services').DataTable({retrieve: true}).ajax.reload(null, false);
             }
 
+            function addedCredential(credential) {
+                $('#datatable-credentials').DataTable({retrieve: true}).ajax.reload(null, false);
+            }
+
             function notification(options) {
                 new PNotify({
                     title: options.title,
@@ -153,6 +157,9 @@
                         break;
                     case 'addedService':
                         addedService(content);
+                        break;
+                    case 'addedCredential':
+                        addedCredential(content);
                         break;
                     case 'deletedServices':
                         deletedServices(content);

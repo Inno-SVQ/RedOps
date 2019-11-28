@@ -30,6 +30,12 @@
                                                 aria-hidden="true">×</span>
                                     </button>
                                 </div>
+                                <div class="modal-body">
+                                    {!! BootForm::open() !!}
+                                    {!! BootForm::text('add-credential-username', 'Username') !!}
+                                    {!! BootForm::text('add-credential-password', 'Password') !!}
+                                    {!! BootForm::text('add-credential-domain', 'Domain') !!}
+                                </div>
                                 <div class="modal-footer">
                                     <button id="add-credential-cancel" type="button" class="btn btn-secondary"
                                             data-dismiss="modal">Close
@@ -57,11 +63,8 @@
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="checkbox-all" aria-label="..."></th>
-                        <th>Name</th>
-                        <th>Parent</th>
-                        <th>Country</th>
-                        <th>Main domain</th>
-                        <th>LinkedIn</th>
+                        <th>Username</th>
+                        <th>Password</th>
                     </tr>
                     </thead>
                 </table>
@@ -110,10 +113,11 @@
                     }, function (response) {
                         $('#add-credential-username').empty()
                         $('#add-credential-password').empty()
+                        $('#add-credential-domain').empty()
                     }).error().success();
                 });
                 $(document).ready(function () {
-                    if($('#datatable-credentials').length) {
+                    if ($('#datatable-credentials').length) {
                         table = $('#datatable-credentials').DataTable({
                             serverSide: true,
                             processing: true,
@@ -121,12 +125,12 @@
                             ajax: '{{ route('ajax/enumeration/credentials', $selectedAudit) }}',
                             columns: [
                                 {data: "checkbox", name: "checkbox", orderable: false, searchable: false},
-                                {data: "username", name: "name"},
+                                {data: "username", name: "username"},
                                 {data: "password", name: "password"}
                             ],
                             aoColumnDefs: [
-                                {'bSortable': true, 'aTargets': [1, 2, 3, 4, 5]},
-                                {'bSearchable': true, 'aTargets': [1, 2, 3, 4, 5]}
+                                {'bSortable': true, 'aTargets': [1, 2]},
+                                {'bSearchable': true, 'aTargets': [1, 2]}
                             ],
                             drawCallback: function () {
                                 for (i = 0; i < selectedItems.length; i++) {

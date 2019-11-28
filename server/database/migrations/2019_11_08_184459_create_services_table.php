@@ -22,7 +22,6 @@ class CreateServicesTable extends Migration
             $table->string('version');
             $table->string('application_protocol');
             $table->uuid('from_job_id');
-            $table->foreign('host_id')->references('id')->on('hosts')->onDelete('cascade');
             $table->unique(['port', 'host_id', 'protocol']);
             $table->timestamps();
         });
