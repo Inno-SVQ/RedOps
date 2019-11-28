@@ -38,18 +38,25 @@ try:
             raise Exception("LOG_WHOLE_PETITIONS key not in .env file.")
 
         if ("ROOT") not in configJSON:
-            raise Exception("ROOT key no tin .env file")
+            raise Exception("ROOT key not in .env file")
+
+        if ("WORDLISTS_PATH") not in configJSON:
+            raise Exception("WORDLISTS_PATH key not in .env file")
+
+        if ("SECURITYTRAILS_APIKEY") not in configJSON:
+            raise Exception("SECURITYTRAILS_APIKEY key not in .env file")
 
         # Check root
         if configJSON["ROOT"]:
             if os.getuid() != 0:
                 raise Exception("ROOT mode set but not root. Change supervisor user")
-
-
 except FileNotFoundError:
     raise Exception("Enviroment file not found.")
 except TypeError:
-    raise Exception(".env not valid JSON")
+    raise Exception(".agent_config not valid JSON")
+
+# Load wordlists list
+wordlists = {"wordlists": [x for x in os.listdir(configJSON["WORDLISTS_PATH"])]}
 
 if(configJSON["LOG_WHOLE_PETITIONS"]):
     import http.client as http_client
@@ -98,6 +105,11 @@ def finishJob(data, id):
 def startJob(moduleName, id, data, spawn_process=False):
         #TODO: Maybe path traversal?
         module = loadModule("modules/{}".format(moduleName))
+        # Add API key if needed
+
+        if(moduleName == "SearchSubdomainsModule"):
+            data = {"SECURITYTRAILS_APIKEY": configJSON["SECURITYTRAILS_APIKEY"], "data": data}
+
         module.params = data
         module.moduleName = moduleName
         if(spawn_process):
