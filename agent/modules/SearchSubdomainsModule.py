@@ -18,6 +18,8 @@ class Module(BaseModule):
                 self.securityTrails(domain.name, domain.id)
                 self.dnsDumpster(domain.name, domain.id)
                 self.crtshSearch(domain.name, domain.id)
+        # End JOB
+        self.callback.finish(list())
 
     def crtshSearch(self, domain, parentDomain):
         result = []
