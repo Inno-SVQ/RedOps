@@ -64,9 +64,14 @@ class Shodan():
             host = self.api.host(ip)
 
             r=host.get("data")
-            
+
+            try:
+                ap=r[1]["_shodan"]["module"]
+            except Exception as e:
+                ap=None
+
             for item in host['data']:
-                list.append(Service(ip,item['port'],item['transport'],r[1]["product"],None,None))
+                list.append(Service(ip,item['port'],item['transport'],r[1]["product"],None,ap))
 
         except Exception as e:
             self.callback.exception(e)
