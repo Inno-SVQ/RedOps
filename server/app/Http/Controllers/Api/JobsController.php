@@ -111,9 +111,13 @@ class JobsController extends Controller
             try {
                 $model->save();
                 array_push($modelsAdded, basename(get_class($model)));
-            } catch (Exception $e) {
+            } catch (\Exception $exception) {
 
             }
+        }
+
+        if(in_array('App\\Credential', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedCredential', json_encode($data)));
         }
 
         if(in_array('App\\Domain', $modelsAdded)) {
