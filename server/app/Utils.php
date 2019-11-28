@@ -32,8 +32,8 @@ class Utils
 
     public static function sendRequestToAgent($data) {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://agent.redops.me/jobs");
-        curl_setopt($ch, CURLOPT_PORT, 443);
+        curl_setopt($ch, CURLOPT_URL, "http://agent.hackathon.redops.me/jobs");
+        curl_setopt($ch, CURLOPT_PORT, 80);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',

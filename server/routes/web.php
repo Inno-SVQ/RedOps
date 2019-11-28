@@ -50,6 +50,11 @@ Route::post('/audit/{id}/enumeration/services', 'ServicesController@addService')
 Route::get('/ajax/audit/{id}/enumeration/services', 'ServicesController@servicesAjax')->name('ajax/enumeration/services')->middleware('auth');
 Route::post('/ajax/audit/{id}/enumeration/companies/findServices', 'ServicesController@findServices')->name('ajax/enumeration/companies/findServices')->middleware('auth');
 
+/* Credentials */
+Route::get('/audit/{id}/enumeration/credentials', 'CredentialsController@index')->name('credentials')->middleware('auth');
+Route::post('/audit/{id}/enumeration/credentials/delete', 'CredentialsController@deleteCredentials')->name('credentials/delete')->middleware('auth');
+Route::post('/audit/{id}/enumeration/credentials/add', 'CredentialsController@addCredential')->name('credentials/add')->middleware('auth');
+Route::get('/ajax/audit/{id}/enumeration/credentials', 'CredentialsController@credentialsAjax')->name('ajax/enumeration/credentials')->middleware('auth');
 
 Route::middleware(['middleware' => 'auth'])->group(function () {
     Route::post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
