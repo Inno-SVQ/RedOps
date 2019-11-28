@@ -7,7 +7,7 @@ def RedOpsDecoder(p):
     if(p.get("type", None) == "__ip__"):
         return IP(p["id"], p["value"], p["isIPv4"])
     if(p.get("type", None) == "__domain__"):
-        return Domain(p["id"], p["name"], p.get("parent", None))
+        return Domain(p["id"], p["name"], p.get("parent", None), p.get("ip", None))
     if(p.get("type", None) == "__company__"):
         return Company(p["name"], p["id"], p["main_domain"])
     if(p.get("type", None) == "__service__"):
