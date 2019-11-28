@@ -7,9 +7,6 @@
         "laravel 5.8",
         "RedOps"
     ],
-    "authors": [
-        "InnoSVQ"
-    ],
     "license": "GPLv3",
     "type": "project",
     "require": {
