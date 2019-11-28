@@ -123,6 +123,14 @@
                 $('#datatable-services').DataTable({retrieve: true}).ajax.reload(null, false);
             }
 
+            function addedCredential(credential) {
+                $('#datatable-credentials').DataTable({retrieve: true}).ajax.reload(null, false);
+            }
+
+            function deletedCredentials(credentials) {
+                $('#datatable-credentials').DataTable({retrieve: true}).ajax.reload(null, false);
+            }
+
             function notification(options) {
                 new PNotify({
                     title: options.title,
@@ -154,8 +162,11 @@
                     case 'addedService':
                         addedService(content);
                         break;
-                    case 'deletedServices':
-                        deletedServices(content);
+                    case 'addedCredential':
+                        addedCredential(content);
+                        break;
+                    case 'deletedCredentials':
+                        deletedCredentials(content);
                         break;
                     case 'notification':
                         notification(content);
