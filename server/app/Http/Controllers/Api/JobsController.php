@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Agent\Models\Company;
+use App\Agent\Models\Credential;
 use App\Agent\Models\Domain;
 use App\Agent\Models\IP;
 use App\Agent\Models\Service;
@@ -59,7 +60,11 @@ class JobsController extends Controller
         return new Service($data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
     }
 
-    private function decodeJSON(array $data){
+    private function decodeCredential($data, $audit){
+        return new Credential($data['username'], $data['password'], $data['domain'], $data['source'], $audit->id);
+    }
+
+    private function decodeJSON(array $data, $audit){
 
         $result = array();
 
@@ -78,6 +83,10 @@ class JobsController extends Controller
 
             if($element['type'] == "__service__"){
                 $result[] = self::decodeService($element);
+            }
+
+            if($element['type'] == "__credential__"){
+                $result[] = self::decodeCredential($element, $audit);
             }
         }
 
@@ -101,7 +110,7 @@ class JobsController extends Controller
         event(new WsMessage($owner->rid, 'jobUpdate', json_encode($openJobs)));
         event(new WsMessage($owner->rid, 'debug', json_encode($data)));
 
-        $objects = self::decodeJSON($data);
+        $objects = self::decodeJSON($data, $audit);
 
         $modelsAdded = array();
 
