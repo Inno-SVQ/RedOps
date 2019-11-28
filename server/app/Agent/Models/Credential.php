@@ -26,4 +26,13 @@ class Credential
         return new Credential($credential->username, $credential->password, $credential->domain, $credential->source);
     }
 
+    public function toEloquent() {
+        $new = new \App\Credential();
+        $new->username = $this->username;
+        $new->password = $this->password;
+        $new->domain = $this->domain;
+        $new->source = $this->source;
+        return $new;
+    }
+
 }

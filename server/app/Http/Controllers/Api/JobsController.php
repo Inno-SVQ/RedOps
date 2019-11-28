@@ -116,6 +116,10 @@ class JobsController extends Controller
             }
         }
 
+        if(in_array('App\\Credential', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedCredential', json_encode($data)));
+        }
+
         if(in_array('App\\Domain', $modelsAdded)) {
             event(new WsMessage($owner->rid, 'addedDomain', json_encode($data)));
         }
