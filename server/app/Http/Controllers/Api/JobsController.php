@@ -111,7 +111,7 @@ class JobsController extends Controller
             try {
                 $model->save();
                 array_push($modelsAdded, basename(get_class($model)));
-            } catch (Exception $e) {
+            } catch (\Exception $exception) {
 
             }
         }
