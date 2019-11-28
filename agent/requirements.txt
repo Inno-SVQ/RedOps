@@ -1,4 +1,4 @@
-beautifulsoup4==4.8.1
+beautifulsoup4==4.7.0
 certifi==2019.9.11
 cffi==1.13.2
 chardet==3.0.4
@@ -17,3 +17,5 @@ soupsieve==1.9.4
 supervisor==4.1.0
 urllib3==1.25.6
 Werkzeug==0.16.0
+pycrtsh==0.1
+dnsdumpster
