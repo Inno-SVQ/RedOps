@@ -7,6 +7,7 @@ use App\Agent\Models\Credential;
 use App\Agent\Models\Domain;
 use App\Agent\Models\IP;
 use App\Agent\Models\Service;
+use App\Agent\Models\WebTechnology;
 use App\Audit;
 use App\Http\Controllers\Controller;
 use App\Job;
@@ -57,11 +58,18 @@ class JobsController extends Controller
     }
 
     private function decodeService($data){
-        return new Service($data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
+        if(isset($data['id'])) {
+            return new Service($data['id'], $data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
+        }
+        return new Service(null, $data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
     }
 
     private function decodeCredential($data, $audit){
         return new Credential($data['username'], $data['password'], $data['domain'], $data['source'], $audit->id);
+    }
+
+    private function decodeTechnology($data){
+        return new WebTechnology($data['name'], $data['icon'], $data['serviceId']);
     }
 
     private function decodeJSON(array $data, $audit){
@@ -87,6 +95,10 @@ class JobsController extends Controller
 
             if($element['type'] == "__credential__"){
                 $result[] = self::decodeCredential($element, $audit);
+            }
+
+            if($element['type'] == "__technology__"){
+                $result[] = self::decodeTechnology($element, $audit);
             }
         }
 

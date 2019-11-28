@@ -13,4 +13,8 @@ class Service extends UuidModel
         return Domain::where('id', $this->host_id)->first();
     }
 
+    public function technologies() {
+        return WebTechnology::where('service_id', $this->id)->get();
+    }
+
 }

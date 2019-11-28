@@ -12,58 +12,40 @@
 
         <div class="x_panel">
             <div class="x_title">
-                <h2>Services<small></small></h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <!-- Large modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#modal-add-service">Add service
-                    </button>
-
-                    <div id="modal-add-service" class="modal fade bs-add-service-modal-lg" tabindex="-1" role="dialog"
-                         aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="myModalLabel">Add service to "{{$selectedAudit->name}}
-                                        "</h4>
-                                    <button type="button" class="close" data-dismiss="modal"><span
-                                                aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <?php
-                                    $parentOptions = array('-' => '-');
-                                    foreach ($selectedAudit->companies() as $company) {
-                                        foreach ($company->domains() as $domain) {
-                                            $parentOptions[$domain->id] = $domain->domain;
-                                        }
-                                    }
-                                    ?>
-                                    {!! BootForm::open() !!}
-                                    {!! BootForm::select('add-service-host', 'Host', $parentOptions) !!}
-                                    {!! BootForm::select('add-service-protocol', 'Protocol', array('TCP' => 'TCP','UDP' => 'UDP')) !!}
-                                    {!! BootForm::text('add-service-port', 'Port') !!}
-                                    {!! BootForm::select('add-service-application-protocol', 'Application protocol', array('ssh' => 'ssh','telnet' => 'telnet','http'=>'http','https'=>'https','ftp'=>'ftp','pop3'=>'pop3','imap'=>'imap','sip'=>'sip','unknown'=>'unknown')) !!}
-                                    {!! BootForm::text('add-service-product', 'Product') !!}
-                                    {!! BootForm::text('add-service-version', 'Version') !!}
-                                </div>
-                                <div class="modal-footer">
-                                    <button id="add-company-cancel" type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Close
-                                    </button>
-                                    <button id="add-service-confirm" type="button" class="btn btn-default">Add service
-                                    </button>
-                                    {!! BootForm::close() !!}
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </ul>
+                <h2>{{$service->application_protocol}}://{{$service->getDomain()->domain}}:{{$service->port}}<small></small></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+
+
+                @if(count($service->technologies()) > -10)
+                    <div class="row">
+                        <div class="col-md-9 col-sm-9">
+                            <div class="dashboard_graph">
+                                <div class="row x_title">
+                                    <div class="col-md-6">
+                                        <h3>Technologies used in webservice</h3>
+                                    </div>
+                                </div>
+                                <ul class="quick-list">
+                                    @foreach($service->technologies() as $technology)
+                                        <li>
+                                            <img src="https://s3.dualstack.ap-southeast-2.amazonaws.com/assets.wappalyzer.com/images/icons/{{$technology->icon}}"
+                                                 alt="Carbon Ads" width="24" height="24"> {{$technology->name}}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="clearfix"></div>
+
+                <div class="row x_title">
+                    <div class="col-md-6">
+                        <h3>Directories found</h3>
+                    </div>
+                </div>
 
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle disabled" type="button" id="dropdown-actions"
@@ -72,7 +54,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a id="action-find-webtechnologies">Scan web technologies</a></li>
+                        <li><a id="action-find-subdomains"></a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="show-modal-delete" data-toggle="modal" href="#modal-action-delete">Delete</a></li>
                     </ul>
@@ -105,21 +87,17 @@
                 </div>
 
                 <p class="text-muted font-13 m-b-30">
-                    List of the services for this audit.
+                    List of directories of this webservice
                 </p>
 
-                <table id="datatable-services"
+                <table id="datatable-{{$service->id}}-directories"
                        class="table table-striped table-bordered dt-responsive nowrap table-datatable"
                        cellspacing="0" width="100%">
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="checkbox-all" aria-label="..."></th>
-                        <th>Host</th>
-                        <th>Protocol</th>
-                        <th>Port</th>
-                        <th>Application Protocol</th>
-                        <th>Product</th>
-                        <th>Version</th>
+                        <th>Path</th>
+                        <th>Type</th>
                     </tr>
                     </thead>
                 </table>
@@ -127,7 +105,7 @@
             </div>
         </div>
 
-        @include('helpers/jstables')
+        @include('helpers.jstables')
 
         @push('scripts')
 
@@ -135,12 +113,6 @@
 
                 $('#action-find-subdomains').click(function () {
                     $.post('{{ route('ajax/enumeration/companies/findSubdomains', $selectedAudit->id) }}', {
-                        '_token': $('meta[name=csrf-token]').attr('content'),
-                        data: JSON.stringify(selectedItems),
-                    }).error().success();
-                });
-                $('#action-find-webtechnologies').click(function () {
-                    $.post('{{ route('ajax/enumeration/services/webtechnologies', $selectedAudit->id) }}', {
                         '_token': $('meta[name=csrf-token]').attr('content'),
                         data: JSON.stringify(selectedItems),
                     }).error().success();

@@ -78,6 +78,6 @@ class Audit extends UuidModel
     }
 
     public function getOwner() {
-        return User::where('rid', $this->owner)-first();
+        return User::where('id', $this->owner)->first();
     }
 }
