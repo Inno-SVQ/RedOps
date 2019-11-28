@@ -43,6 +43,9 @@ try:
         if ("WORDLISTS_PATH") not in configJSON:
             raise Exception("WORDLISTS_PATH key not in .env file")
 
+        if ("SECURITYTRAILS_APIKEY") not in configJSON:
+            raise Exception("SECURITYTRAILS_APIKEY key not in .env file")
+
         # Check root
         if configJSON["ROOT"]:
             if os.getuid() != 0:
@@ -102,6 +105,11 @@ def finishJob(data, id):
 def startJob(moduleName, id, data, spawn_process=False):
         #TODO: Maybe path traversal?
         module = loadModule("modules/{}".format(moduleName))
+        # Add API key if needed
+
+        if(moduleName == "SearchSubdomainsModule"):
+            data = {"SECURITYTRAILS_APIKEY": configJSON["SECURITYTRAILS_APIKEY"], "data": data}
+
         module.params = data
         module.moduleName = moduleName
         if(spawn_process):
