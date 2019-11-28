@@ -161,11 +161,12 @@ def jobsinfo():
                 return jsonify({"status": False})
 
 if __name__ == "__main__":
-    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-    context.verify_mode = ssl.CERT_REQUIRED
-    context.load_verify_locations('certs/CA.pem')
-    context.load_cert_chain('certs/server.crt', 'certs/server.key')
-    app.run(ssl_context=context, host='127.0.0.1', debug=True)
+    #context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    #context.verify_mode = ssl.CERT_REQUIRED
+    #context.load_verify_locations('certs/CA.pem')
+    #context.load_cert_chain('certs/server.crt', 'certs/server.key')
+    #app.run(ssl_context=context, host='127.0.0.1', debug=True)
+    app.run(host='127.0.0.1', debug=True)
 
 if __name__ != "__main__":
     gunicorn_logger = logging.getLogger("gunicorn.error")
