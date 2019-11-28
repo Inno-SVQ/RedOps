@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Audit;
+use App\Company;
 use App\Domain;
 use App\Events\WsMessage;
 use App\Credential;
+use App\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -63,5 +65,15 @@ class CredentialsController extends Controller
 
         return 'OK';
     }
+
+    function deleteCredentials(Request $request)
+    {
+        $audit = Audit::where([['owner', Auth::id()], ['id', $request->id]])->firstOrFail();
+        $credentials = Credential::where('audit_id', $audit->id)->whereIn('id', json_decode($request->data))->delete();
+        event(new WsMessage(Auth::user()->rid, 'deletedCredentials', $request->data));
+
+        return json_encode($credentials);
+    }
+
 
 }
