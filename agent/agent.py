@@ -10,6 +10,7 @@ from signal import SIGTERM
 import logging
 import requests
 import atexit
+import os
 
 
 # We load the .env files with the configuration of the agent.
@@ -35,6 +36,15 @@ try:
         
         if ("LOG_WHOLE_PETITIONS") not in configJSON:
             raise Exception("LOG_WHOLE_PETITIONS key not in .env file.")
+
+        if ("ROOT") not in configJSON:
+            raise Exception("ROOT key no tin .env file")
+
+        # Check root
+        if configJSON["ROOT"]:
+            if os.getuid() != 0:
+                raise Exception("ROOT mode set but not root. Change supervisor user")
+
 
 except FileNotFoundError:
     raise Exception("Enviroment file not found.")
