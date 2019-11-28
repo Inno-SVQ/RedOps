@@ -107,6 +107,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <li><a id="action-find-subdomains">Find subdomains</a></li>
+                        <li><a id="action-find-credentials">Find leaked credentials</a></li>
                         <li><a id="action-resolve-domains">Resolve Domains</a></li>
                         <li><a data-toggle="modal" href="#modal-action-find-services">Find
                                 services</a></li>
@@ -204,6 +205,12 @@
 
                 $('#action-find-subdomains').click(function () {
                     $.post('{{ route('ajax/enumeration/companies/findSubdomains', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(selectedItems),
+                    }).error().success();
+                });
+                $('#action-find-credentials').click(function () {
+                    $.post('{{ route('ajax/enumeration/findCredentials', $selectedAudit->id) }}', {
                         '_token': $('meta[name=csrf-token]').attr('content'),
                         data: JSON.stringify(selectedItems),
                     }).error().success();

@@ -7,12 +7,15 @@ use App\Company;
 use App\Domain;
 use App\Events\WsMessage;
 use App\Credential;
+use App\Job;
 use App\Service;
+use App\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use Yajra\DataTables\Facades\DataTables;
+use Tebru\Gson\Gson;
 
 class CredentialsController extends Controller
 {
@@ -74,6 +77,52 @@ class CredentialsController extends Controller
 
         return json_encode($credentials);
     }
+
+    function findCredentials(Request $request)
+    {
+        $audit = Audit::where([['owner', Auth::id()], ['id', $request->id]])->firstOrFail();
+
+        $job = new Job();
+        $job->module = 'SearchLeakedCredentialsModule';
+        $job->status = 0;
+        $job->audit_id = $audit->id;
+        $job->parameters = $request->data;
+        $job->save();
+
+        $domains = Domain::whereIn('id', json_decode($request->data))
+            ->get();
+
+        $domainsAllowed = array();
+        foreach ($domains as $domain) {
+            if($domain->parentCompany()->audit()->owner === Auth::id()) {
+                array_push($domainsAllowed, \App\Agent\Models\Domain::fromEloquent($domain));
+            }
+        }
+
+        $data = array(
+            'module' => $job->module,
+            'id' => (string) $job->id,
+            'data' => $domainsAllowed
+        );
+
+        $gson = Gson::builder()->build();
+        $json = $gson->toJson($data);
+
+        $resp = Utils::sendRequestToAgent($json);
+
+        $domainNames = array();
+        foreach($domainsAllowed as $domain) {
+            array_push($domainNames, $domain->name);
+        }
+        $strdomains = implode(', ', $domainNames);
+        if(strlen($strdomains)  > 200) {
+            $strdomains = substr($strdomains, 0, 200).'...';
+        }
+        Utils::sendNotificationUser(Auth::user()->rid, 'Job started', 'Searching leaked credentials for '.$strdomains, 'success');
+
+        return $json;
+    }
+
 
 
 }
