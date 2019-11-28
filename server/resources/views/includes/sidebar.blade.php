@@ -55,7 +55,7 @@
                                     <a href="{{route('services', $selectedAudit->id)}}">Services <span class="label label-default">{{count($selectedAudit->services())}}</span></a>
                                 </li>
                                 <li>
-                                    <a href="{{route('domains', $selectedAudit->id)}}">Webs <span class="label label-default">{{count($selectedAudit->services())}}</span></a>
+                                    <a href="{{route('credentials', $selectedAudit->id)}}">Credentials </a>
                                 </li>
                             </ul>
                         </li>
