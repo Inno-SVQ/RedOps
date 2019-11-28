@@ -59,6 +59,7 @@ Route::post('/ajax/audit/{id}/enumeration/findCredentials', 'CredentialsControll
 
 /* Web Services detail */
 Route::get('/audit/{id}/enumeration/services/{serviceid}', 'WebServicesController@index')->name('servicedetail')->middleware('auth');
+Route::post('/ajax/audit/{id}/enumeration/services/webtechnologies', 'WebServicesController@webtechnologies')->name('ajax/enumeration/services/webtechnologies')->middleware('auth');
 
 
 Route::middleware(['middleware' => 'auth'])->group(function () {

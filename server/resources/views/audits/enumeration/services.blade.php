@@ -72,7 +72,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a id="action-find-subdomains">Find mierdas</a></li>
+                        <li><a id="action-find-webtechnologies">Scan web technologies</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="show-modal-delete" data-toggle="modal" href="#modal-action-delete">Delete</a></li>
                     </ul>
@@ -135,6 +135,12 @@
 
                 $('#action-find-subdomains').click(function () {
                     $.post('{{ route('ajax/enumeration/companies/findSubdomains', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(selectedItems),
+                    }).error().success();
+                });
+                $('#action-find-webtechnologies').click(function () {
+                    $.post('{{ route('ajax/enumeration/services/webtechnologies', $selectedAudit->id) }}', {
                         '_token': $('meta[name=csrf-token]').attr('content'),
                         data: JSON.stringify(selectedItems),
                     }).error().success();

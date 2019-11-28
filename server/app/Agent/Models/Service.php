@@ -8,6 +8,7 @@ class Service
 {
 
     public $host = null;
+    public $id = null;
     public $port = null;
     public $protocol = null;
     public $version = null;
@@ -15,8 +16,9 @@ class Service
     public $application_protocol = null;
     public $type = '__service__';
 
-    public function __construct($host, $port, $protocol, $version, $product, $application_protocol)
+    public function __construct($id, $host, $port, $protocol, $version, $product, $application_protocol)
     {
+        $this->id = $id;
         $this->host = $host;
         $this->port = $port;
         $this->protocol = $protocol;
@@ -26,11 +28,12 @@ class Service
     }
 
     public static function  fromEloquent(\App\Service $service) {
-        return new Service($service->host_id, $service->port, $service->protocol, $service->version, $service->product, $service->application_protocol);
+        return new Service($service->id, $service->host_id, $service->port, $service->protocol, $service->version, $service->product, $service->application_protocol);
     }
 
     public function toEloquent() {
         $new = new \App\Service();
+        $new->id = $this->id;
         $new->host_id = $this->host;
         $new->port = $this->port;
         $new->protocol = $this->protocol;
