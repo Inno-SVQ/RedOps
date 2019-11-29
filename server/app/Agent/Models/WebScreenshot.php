@@ -24,8 +24,6 @@ class WebScreenshot
     }
 
     public function toEloquent() {
-        $data = base64_decode($this->picture);
-        Storage::disk('local')->put($this->service_id, $data);
         $new = new \App\WebScreenshot();
         $new->service_id = $this->service_id;
         $new->image_name = $this->service_id . '.jpeg';

@@ -18,6 +18,7 @@ use App\Events\WsMessage;
 use App\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Storage;
 
 class JobsController extends Controller
 {
@@ -114,9 +115,6 @@ class JobsController extends Controller
                 $result[] = self::decodeWeburl($element, $audit);
             }
 
-            if($element['type'] == "__webscreenshot__"){
-                $result[] = self::decodeWebscreenshot($element, $audit);
-            }
         }
 
         return $result;
@@ -174,15 +172,20 @@ class JobsController extends Controller
             event(new WsMessage($owner->rid, 'addedWeburls', json_encode($data)));
         }
 
-        if(in_array('App\\WebScreenshot', $modelsAdded)) {
-            event(new WsMessage($owner->rid, 'addedWebscreenshots', json_encode($data)));
-        }
-
         if($data['finished'] === true) {
             Utils::sendNotificationUser($job->getOwner()->rid, 'Job finished', \App\Http\Controllers\JobsController::getHumanModuleName($job->module).' job has been finished.', 'success');
         }
 
         return 'OK';
+    }
+
+    public function screenshotUpload(Request $request) {
+
+        $service_id = $request->serviceid;
+        $file = $request->file('picture')->storeAs('public', $service_id . '.jpeg');
+
+        return $service_id;
+
     }
 
 }

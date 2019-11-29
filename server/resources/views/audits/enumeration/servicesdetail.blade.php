@@ -38,6 +38,9 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-3">
+                        <img src="/storage/{{($service->id)}}.jpeg" width="300">
+                    </div>
                 </div>
 
                 <div class="clearfix"></div>
