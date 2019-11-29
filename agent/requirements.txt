@@ -21,3 +21,4 @@ pycrtsh==0.1
 dnsdumpster
 wfuzz
 pysocks
+heimdall
