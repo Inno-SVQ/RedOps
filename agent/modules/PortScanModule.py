@@ -41,7 +41,7 @@ class Module(BaseModule):
 
             if(self.params["options"]["mode"] == "TCP"):
                 # We update every time a host is scan
-                nm.scan(hosts=hosts, arguments='-sT -sV -Pn', ports=ports, callback=self.update)
+                nm.scan(hosts=hosts, arguments='-sS -sV -Pn', ports=ports, callback=self.update)
                 # In the last loop we want to finish the task in the server
             elif(self.params["options"]["mode"] == "UDP"):
                 nm.scan(hosts=hosts, arguments='-sU -Pn', ports=ports, callback=self.update)
@@ -58,7 +58,8 @@ class Module(BaseModule):
     def update(self, host, data):
         result = []
         if(data == None):
-            self.callback.error("Probably UDP scan without root permissions.")
+            self.callback.error("Probably privileged scan without root permissions.")
+            return
         if(data["scan"][host].get("tcp", None) != None):
             for port in data["scan"][host]["tcp"]:
                 if(data["scan"][host]["tcp"][port]["state"] == "open"):
