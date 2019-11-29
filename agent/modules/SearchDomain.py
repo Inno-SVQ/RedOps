@@ -17,13 +17,10 @@ class Module(BaseModule):
         data = self.params["data"]
 
         for index, domain in enumerate(data):
-            try:
-                res=app.joinDomains(domain.name)
-            except Exception as e:
-                self.callback.exception(e)
+            res=app.joinDomains(domain.name)
             jsonStr=[]
             for i in res:
-                jsonStr.append(Domain(i['domain'], domain.name, i['ip']))
+                jsonStr.append(Domain(i['domain'], domain.name, i['ip'],None))
 
             # In the last loop we want to finish the task in the server
             if(index < len(self.params) - 1):
@@ -53,7 +50,7 @@ class SearchDomain:
                 res.append(link.get('href'))
 
         except Exception as e:
-            pass
+            self.callback.exception(e)
 
 
         for i in res:
@@ -131,25 +128,22 @@ class SearchDomain:
 
     def joinDomains(self,domain):
         res=[]
+        res2=[]
 
         l1=self.checkDomainWebSite(domain)
         l2=self.checkDomains(domain)
 
         for i in l1:
-            print(i)
+
             for j in l2:
-                print(j)
+
                 if(i['domain']==j['domain']):
                     res.append(i)
                     res2.append(i['ip'])
                     break
                 else:
-                    if((i['ip'] in res2)==False):
-                        res.append(i)
-                        res2.append(i['ip'])
-                        break
-                    elif((j['ip'] in res2)==False):
-                        res.append(j['ip'])
-                        res2.append(j['ip'])
-                        break
+                    res.append(j)
+                    res2.append(j['ip'])
+                    break
+
         return res
