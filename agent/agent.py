@@ -94,7 +94,7 @@ def updateJob(data, id):
     app.logger.debug("----------------------------JOB {} update----------------------------\n{}".format(id, postData))
 
     if(not configJSON["DISABLE_MASTER_SERVER"]):
-        r = requests.post("https://{}/api/job/update".format(configJSON["MASTER_DOMAIN"]), headers={"Content-Type": "application/json"}, data=postData)
+        r = requests.post("https://{}/api/job/update".format(configJSON["MASTER_DOMAIN"]), headers={"Content-Type": "application/json", "RedOps-ApiKey": configJSON["API_KEY"]}, data=postData)
         app.logger.debug("----------------------------Response from master for JOB {} UPDATE----------------------------\n{}".format(id, r.text))
 
 def finishJob(data, id):
@@ -105,7 +105,7 @@ def finishJob(data, id):
     app.logger.debug("----------------------------JOB {} finish----------------------------\n{}".format(id, postData))
 
     if(not configJSON["DISABLE_MASTER_SERVER"]):
-        r = requests.post("https://{}/api/job/update".format(configJSON["MASTER_DOMAIN"]), headers={"Content-Type": "application/json"}, data=postData)
+        r = requests.post("https://{}/api/job/update".format(configJSON["MASTER_DOMAIN"]), headers={"Content-Type": "application/json", "RedOps-ApiKey": configJSON["API_KEY"]}, data=postData)
         app.logger.debug("----------------------------Response from master for JOB {} FINISH----------------------------\n{}".format(id, r.text))
     
 def startJob(moduleName, id, data, spawn_process=False):
