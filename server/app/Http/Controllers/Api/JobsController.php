@@ -77,6 +77,10 @@ class JobsController extends Controller
         return new WebUrl($data['service_id'], $data['host'], $data['port'], $data['path'], $data['file_type'], $data['word_length'], $data['char_length'], $data['status_code']);
     }
 
+    private function decodeWebscreenshot($data){
+        return new WebScreenshot($data['service_id'], $data['path'], $data['picture']);
+    }
+
     private function decodeJSON(array $data, $audit){
 
         $result = array();
@@ -108,6 +112,10 @@ class JobsController extends Controller
 
             if($element['type'] == "__weburl__"){
                 $result[] = self::decodeWeburl($element, $audit);
+            }
+
+            if($element['type'] == "__webscreenshot__"){
+                $result[] = self::decodeWebscreenshot($element, $audit);
             }
         }
 
@@ -164,6 +172,10 @@ class JobsController extends Controller
 
         if(in_array('App\\WebUrl', $modelsAdded)) {
             event(new WsMessage($owner->rid, 'addedWeburls', json_encode($data)));
+        }
+
+        if(in_array('App\\WebScreenshot', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedWebscreenshots', json_encode($data)));
         }
 
         if($data['finished'] === true) {
