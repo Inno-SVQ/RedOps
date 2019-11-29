@@ -40,6 +40,7 @@ class SearchDomain:
         web="https://"+domain
         dm=domain.split(".")[0]
 
+        b={}
         res=[]
         res2=[]
         res3=[]
@@ -67,6 +68,7 @@ class SearchDomain:
                         res3.append(i.split("/")[2])
                         res2.append(b)
                         b={}
+
 
             except Exception as e:
                 pass
@@ -133,9 +135,6 @@ class SearchDomain:
         l1=self.checkDomainWebSite(domain)
         l2=self.checkDomains(domain)
 
-        self.callback.debug(l1)
-        self.callback.debug(l2)
-
         for i in l1:
             print(i)
             for j in l2:
@@ -143,7 +142,6 @@ class SearchDomain:
                 if(i['domain']==j['domain']):
                     res.append(i)
                     res2.append(i['ip'])
-                    #input(res)
                     break
                 else:
                     if((i['ip'] in res2)==False):
@@ -154,5 +152,4 @@ class SearchDomain:
                         res.append(j['ip'])
                         res2.append(j['ip'])
                         break
-
         return res
