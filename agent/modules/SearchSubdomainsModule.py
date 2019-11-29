@@ -45,7 +45,7 @@ class Module(BaseModule):
                 data = c.get(cert["id"], type="id")
                 for alternative_name in data["extensions"]["alternative_names"]:
                     # Discard wildcard names
-                    if alternative_name not in discardDomains and "*" not in alternative_name:
+                    if alternative_name not in discardDomains and "*" not in alternative_name and domain in alternative_name:
                         try:
                             ip = socket.gethostbyname(alternative_name)
                         except socket.gaierror as e:
