@@ -74,6 +74,7 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <li><a id="action-find-webtechnologies">Scan web technologies</a></li>
                         <li><a id="show-modal-fuzz" data-toggle="modal" href="#modal-action-fuzz">Fuzz web directories</a></li>
+                        <li><a id="show-modal-screenshots" data-toggle="modal" href="#modal-action-screenshots">Take screenshot of webpages</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="show-modal-delete" data-toggle="modal" href="#modal-action-delete">Delete</a></li>
                     </ul>
@@ -123,6 +124,32 @@
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     <button data-dismiss="modal" class="btn btn-warning" id="btn-fuzz-services"
                                             type="submit">Go fuzzing
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-action-screenshots" class="modal fade bs-modal-" tabindex="-1" role="dialog"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">Warning</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>This screenshots will be taken:</p>
+                                    <div id="services-to-screenshot">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button data-dismiss="modal" class="btn btn-primary" id="btn-screenshot-services"
+                                            type="submit">Take screenshots
                                     </button>
                                 </div>
 
@@ -186,6 +213,20 @@
                         data: JSON.stringify(fuzzItems),
                     }).error().success();
                 });
+                $('#btn-screenshot-services').click(function () {
+                    screenshotItems = []
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        for (var j = 0; j < dataT.length; j++) {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                                screenshotItems.push(dataT[i]['DT_RowId'])
+                            }
+                        }
+                    }
+                    $.post('{{ route('ajax/enumeration/services/screenshot', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(screenshotItems),
+                    }).error().success();
+                });
                 $('#show-modal-fuzz').click(function () {
                     $("#services-to-fuzz").empty();
                     dataT = $('#datatable-services').DataTable({retrieve: true}).data();
@@ -193,6 +234,17 @@
                         for (var j = 0; j < dataT.length; j++) {
                             if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
                                 $("#services-to-fuzz").append("<h5>" + dataT[j]['host'] + "</h5>");
+                            }
+                        }
+                    }
+                });
+                $('#show-modal-screenshots').click(function () {
+                    $("#services-to-screenshot").empty();
+                    dataT = $('#datatable-services').DataTable({retrieve: true}).data();
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        for (var j = 0; j < dataT.length; j++) {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                                $("#services-to-screenshot").append("<h5>" + dataT[j]['host'] + "</h5>");
                             }
                         }
                     }

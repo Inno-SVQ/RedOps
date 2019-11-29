@@ -12,3 +12,4 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/job/update', 'Api\JobsController@update');
+Route::post('/job/screenshotUpload/{serviceid}', 'Api\JobsController@screenshotUpload');

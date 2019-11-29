@@ -18,6 +18,7 @@ use App\Events\WsMessage;
 use App\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Storage;
 
 class JobsController extends Controller
 {
@@ -77,6 +78,10 @@ class JobsController extends Controller
         return new WebUrl($data['service_id'], $data['host'], $data['port'], $data['path'], $data['file_type'], $data['word_length'], $data['char_length'], $data['status_code']);
     }
 
+    private function decodeWebscreenshot($data){
+        return new WebScreenshot($data['service_id'], $data['path'], $data['picture']);
+    }
+
     private function decodeJSON(array $data, $audit){
 
         $result = array();
@@ -109,6 +114,7 @@ class JobsController extends Controller
             if($element['type'] == "__weburl__"){
                 $result[] = self::decodeWeburl($element, $audit);
             }
+
         }
 
         return $result;
@@ -171,6 +177,15 @@ class JobsController extends Controller
         }
 
         return 'OK';
+    }
+
+    public function screenshotUpload(Request $request) {
+
+        $service_id = $request->serviceid;
+        $file = $request->file('picture')->storeAs('public', $service_id . '.jpeg');
+
+        return $service_id;
+
     }
 
 }

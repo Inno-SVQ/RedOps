@@ -22,7 +22,6 @@ Route::post('/audits/new', 'AuditController@createExecute')->middleware('auth');
 Route::get('/audit/{id}', 'AuditController@auditDetail')->name('auditDetail')->middleware('auth');
 Route::delete('/audit/{id}', 'AuditController@delete')->name('auditDelete')->middleware('auth');
 
-
 /* Jobs */
 Route::get('/audit/{id}/jobs', 'JobsController@index')->name('jobs')->middleware('auth');
 Route::get('/ajax/audit/{id}/jobs/poll', 'Api\JobsController@ajaxPoll')->name('ajax/jobs/poll')->middleware('auth');
@@ -62,7 +61,7 @@ Route::get('/audit/{id}/enumeration/services/{serviceid}', 'WebServicesControlle
 Route::post('/ajax/audit/{id}/enumeration/services/webtechnologies', 'WebServicesController@webtechnologies')->name('ajax/enumeration/services/webtechnologies')->middleware('auth');
 Route::post('/ajax/audit/{id}/enumeration/services/fuzz', 'WebServicesController@fuzz')->name('ajax/enumeration/services/fuzz')->middleware('auth');
 Route::get('/ajax/audit/{id}/enumeration/services/{serviceid}/directories', 'WebServicesController@directories')->name('ajax/enumeration/services/directories')->middleware('auth');
-
+Route::post('/ajax/audit/{id}/enumeration/services/screenshot', 'WebServicesController@screenshot')->name('ajax/enumeration/services/screenshot')->middleware('auth');
 
 Route::middleware(['middleware' => 'auth'])->group(function () {
     Route::post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);

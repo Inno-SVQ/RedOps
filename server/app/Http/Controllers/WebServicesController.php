@@ -76,6 +76,29 @@ class WebServicesController extends Controller
 
     }
 
+    public function directories($id, $serviceid) {
+        $selectedService = Service::where('id', $serviceid)->firstOrFail();
+
+        if($selectedService->getDomain()->parentCompany()->audit()->id !== $id || $selectedService->getDomain()->parentCompany()->audit()->getOwner()->rid !== Auth::user()->rid) {
+            return abort(404);
+        }
+
+        $webUrls = DB::table('web_urls')
+            ->where('service_id', $selectedService->id)
+            ->select(['id', 'path', 'file_type', 'word_length', 'char_length', 'status_code']);
+
+        return Datatables::of($webUrls)
+            ->addColumn('checkbox', function ($webUrl) {
+                return '<td><input class="checkbox-item" id="' . get_object_vars($webUrl)['id'] . '" type="checkbox" aria-label="...">';
+            })
+            ->addColumn('DT_RowId', function ($webUrl) {
+                return get_object_vars($webUrl)['id'];
+            })
+            ->rawColumns(['checkbox'])
+            ->removeColumn('id')
+            ->make(true);
+    }
+
     public function fuzz(Request $request) {
 
         $audit = Audit::where([['owner', Auth::id()], ['id', $request->id]])->firstOrFail();
@@ -122,27 +145,50 @@ class WebServicesController extends Controller
 
     }
 
-    public function directories($id, $serviceid) {
-        $selectedService = Service::where('id', $serviceid)->firstOrFail();
+    public function screenshot(Request $request) {
 
-        if($selectedService->getDomain()->parentCompany()->audit()->id !== $id || $selectedService->getDomain()->parentCompany()->audit()->getOwner()->rid !== Auth::user()->rid) {
-            return abort(404);
+        $audit = Audit::where([['owner', Auth::id()], ['id', $request->id]])->firstOrFail();
+
+        $job = new Job();
+        $job->module = 'WebScreenshotModule';
+        $job->status = 0;
+        $job->audit_id = $audit->id;
+        $job->parameters = $request->data;
+        $job->save();
+
+        $services = Service::whereIn('id', json_decode($request->data))->get();
+
+        $weburlsAllowed = array();
+        foreach ($services as $service) {
+            if($service->getDomain()->parentCompany()->audit()->getOwner()->rid === Auth::user()->rid && ($service->application_protocol === 'http' || $service->application_protocol === 'https')) {
+                $webUrl = new WebUrl($service->id, $service->getDomain()->domain, $service->port, '', '', '', 0, 0);
+                array_push($weburlsAllowed, $webUrl);
+            }
         }
 
-        $webUrls = DB::table('web_urls')
-            ->where('service_id', $selectedService->id)
-            ->select(['id', 'path', 'file_type', 'word_length', 'char_length', 'status_code']);
+        $data = array(
+            'module' => $job->module,
+            'id' => (string) $job->id,
+            'data' => $weburlsAllowed
+        );
 
-        return Datatables::of($webUrls)
-            ->addColumn('checkbox', function ($webUrl) {
-                return '<td><input class="checkbox-item" id="' . get_object_vars($webUrl)['id'] . '" type="checkbox" aria-label="...">';
-            })
-            ->addColumn('DT_RowId', function ($webUrl) {
-                return get_object_vars($webUrl)['id'];
-            })
-            ->rawColumns(['checkbox'])
-            ->removeColumn('id')
-            ->make(true);
+        $gson = Gson::builder()->build();
+        $json = $gson->toJson($data);
+
+        $resp = Utils::sendRequestToAgent($json);
+
+        $serviceNames = array();
+        foreach($weburlsAllowed as $weburl) {
+            array_push($serviceNames, $weburl->host.':'.$weburl->port.'/');
+        }
+        $strservices = implode(', ', $serviceNames);
+        if(strlen($strservices)  > 200) {
+            $strdomains = substr($strservices, 0, 200).'...';
+        }
+        Utils::sendNotificationUser(Auth::user()->rid, 'Job started', 'Taking screenshots of webservices: '.$strservices, 'success');
+
+        return $json;
+
     }
 
 }
