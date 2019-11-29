@@ -61,8 +61,14 @@
                                     </a>
                                     @if(isset($service))
                                         <ul class="nav child_menu">
-                                            <li class="sub_menu"><a
-                                                        href="{{route('servicedetail', ['id' => $selectedAudit->id, 'serviceid' => $service->id])}}">{{$service->getDomain()->domain}}:{{$service->port}}</a></li>
+                                            <li class="sub_menu"><a href="{{route('servicedetail', ['id' => $selectedAudit->id, 'serviceid' => $service->id])}}"><?php
+                                                    $title = $service->getDomain()->domain.':'.$service->port;
+                                                    if(strlen($title) > 20){
+                                                        echo substr($title,0,20).'...';
+                                                    } else {
+                                                        echo $title;
+                                                    }
+                                                    ?></a></li>
                                         </ul>
                                     @endif
                                 </li>
@@ -71,9 +77,6 @@
                                 </li>
                             </ul>
                         </li>
-                        </li>
-                    </ul>
-                    </li>
                     </ul>
                 @endif
             </div>

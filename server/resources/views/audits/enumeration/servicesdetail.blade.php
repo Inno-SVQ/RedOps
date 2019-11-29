@@ -12,12 +12,10 @@
 
         <div class="x_panel">
             <div class="x_title">
-                <h2>{{$service->application_protocol}}://{{$service->getDomain()->domain}}
-                    :{{$service->port}}<small></small></h2>
+                <h2>{{$service->application_protocol}}://{{$service->getDomain()->domain}}:{{$service->port}}<small></small></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-
 
                 <div class="row">
                     <div class="col-md-9 col-sm-9">
