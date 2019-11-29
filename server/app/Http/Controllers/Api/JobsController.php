@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Agent\Models\Company;
+use App\Agent\Models\Credential;
 use App\Agent\Models\Domain;
 use App\Agent\Models\IP;
 use App\Agent\Models\Service;
+use App\Agent\Models\WebTechnology;
+use App\Agent\Models\WebUrl;
 use App\Audit;
 use App\Http\Controllers\Controller;
 use App\Job;
@@ -56,10 +59,25 @@ class JobsController extends Controller
     }
 
     private function decodeService($data){
-        return new Service($data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
+        if(isset($data['id'])) {
+            return new Service($data['id'], $data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
+        }
+        return new Service(null, $data['host'], $data['port'], $data['protocol'], $data['version'], $data['product'], $data['application_protocol']);
     }
 
-    private function decodeJSON(array $data){
+    private function decodeCredential($data, $audit){
+        return new Credential($data['username'], $data['password'], $data['domain'], $data['source'], $audit->id);
+    }
+
+    private function decodeTechnology($data){
+        return new WebTechnology($data['name'], $data['icon'], $data['serviceId']);
+    }
+
+    private function decodeWeburl($data){
+        return new WebUrl($data['service_id'], $data['host'], $data['port'], $data['path'], $data['file_type'], $data['word_length'], $data['char_length'], $data['status_code']);
+    }
+
+    private function decodeJSON(array $data, $audit){
 
         $result = array();
 
@@ -78,6 +96,18 @@ class JobsController extends Controller
 
             if($element['type'] == "__service__"){
                 $result[] = self::decodeService($element);
+            }
+
+            if($element['type'] == "__credential__"){
+                $result[] = self::decodeCredential($element, $audit);
+            }
+
+            if($element['type'] == "__technology__"){
+                $result[] = self::decodeTechnology($element, $audit);
+            }
+
+            if($element['type'] == "__weburl__"){
+                $result[] = self::decodeWeburl($element, $audit);
             }
         }
 
@@ -101,7 +131,7 @@ class JobsController extends Controller
         event(new WsMessage($owner->rid, 'jobUpdate', json_encode($openJobs)));
         event(new WsMessage($owner->rid, 'debug', json_encode($data)));
 
-        $objects = self::decodeJSON($data);
+        $objects = self::decodeJSON($data, $audit);
 
         $modelsAdded = array();
 
@@ -126,6 +156,14 @@ class JobsController extends Controller
 
         if(in_array('App\\Service', $modelsAdded)) {
             event(new WsMessage($owner->rid, 'addedService', json_encode($data)));
+        }
+
+        if(in_array('App\\WebTechnology', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedTechnologies', json_encode($data)));
+        }
+
+        if(in_array('App\\WebUrl', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedWeburls', json_encode($data)));
         }
 
         if($data['finished'] === true) {

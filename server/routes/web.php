@@ -57,6 +57,13 @@ Route::post('/audit/{id}/enumeration/credentials/add', 'CredentialsController@ad
 Route::get('/ajax/audit/{id}/enumeration/credentials', 'CredentialsController@credentialsAjax')->name('ajax/enumeration/credentials')->middleware('auth');
 Route::post('/ajax/audit/{id}/enumeration/findCredentials', 'CredentialsController@findCredentials')->name('ajax/enumeration/findCredentials')->middleware('auth');
 
+/* Web Services detail */
+Route::get('/audit/{id}/enumeration/services/{serviceid}', 'WebServicesController@index')->name('servicedetail')->middleware('auth');
+Route::post('/ajax/audit/{id}/enumeration/services/webtechnologies', 'WebServicesController@webtechnologies')->name('ajax/enumeration/services/webtechnologies')->middleware('auth');
+Route::post('/ajax/audit/{id}/enumeration/services/fuzz', 'WebServicesController@fuzz')->name('ajax/enumeration/services/fuzz')->middleware('auth');
+Route::get('/ajax/audit/{id}/enumeration/services/{serviceid}/directories', 'WebServicesController@directories')->name('ajax/enumeration/services/directories')->middleware('auth');
+
+
 Route::middleware(['middleware' => 'auth'])->group(function () {
     Route::post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
 });

@@ -21,7 +21,7 @@
         <!-- Nprogress -->
         <link href="{{ asset("css/nprogress.css") }}" rel="stylesheet">
         <!-- Datatables -->
-        <link href="{{ asset("css/datatables/jquery.dataTables.min.css") }}" rel="stylesheet">
+        <link href="{{ asset("css/datatables/jquery.dataTableçs.min.css") }}" rel="stylesheet">
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.buttons.css" rel="stylesheet">
@@ -131,6 +131,25 @@
                 $('#datatable-credentials').DataTable({retrieve: true}).ajax.reload(null, false);
             }
 
+            function addedTechnologies(data) {
+                if($('.technologies-list').length) {
+                    addTechnologies(data)
+                }
+            }
+
+            function addedWebUrl(data) {
+                service_ids = [];
+                for(let i = 0; i < data.data.length; i++){
+                    if(!service_ids.includes(data.data[i].service_id)) {
+                        service_ids.push(data.data[i].service_id)
+                    }
+                }
+                for(let i = 0; i < service_ids.length; i++){
+                    $('#datatable-' + service_ids[i] + '-directories').DataTable({retrieve: true}).ajax.reload(null, false);
+                }
+
+            }
+
             function notification(options) {
                 new PNotify({
                     title: options.title,
@@ -170,6 +189,9 @@
                         break;
                     case 'notification':
                         notification(content);
+                        break;
+                    case 'addedTechnologies':
+                        addedTechnologies(content);
                         break;
                 }
             });

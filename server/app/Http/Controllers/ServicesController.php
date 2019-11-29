@@ -56,12 +56,17 @@ class ServicesController extends Controller {
             ->addColumn('host', function ($service) {
 
                 $domain = Domain::where('id', $service->host_id)->first();
+
+                if($service->application_protocol == 'http' or $service->application_protocol == 'https') {
+                    return '<a type="button" href="'.route('servicedetail', ['id' => $domain->parentCompany()->audit()->id, 'serviceid' => $service->id]).'" class="btn btn-default" aria-label="Left Align">'.$domain->domain.' <span class="glyphicon glyphicon-globe" aria-hidden="true"></span></a>';
+                }
+
                 if ($domain != null) {
                     return $domain->domain;
                 }
                 return '';
             })
-            ->rawColumns(['checkbox'])
+            ->rawColumns(['checkbox', 'host'])
             ->removeColumn('id')
             ->removeColumn('host_id')
             ->make(true);

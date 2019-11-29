@@ -11,15 +11,17 @@ class Credential
     public $password;
     public $domain;
     public $source;
+    public $audit_id;
     public $type = '__credential__';
 
 
-    public function __construct($username, $password, $domain, $source)
+    public function __construct($username, $password, $domain, $source, $audit_id)
     {
         $this->username = $username;
         $this->password = $password;
         $this->domain = $domain;
         $this->source = $source;
+        $this->audit_id = $audit_id;
     }
 
     public static function fromEloquent(\App\Credential $credential) {
@@ -32,6 +34,7 @@ class Credential
         $new->password = $this->password;
         $new->domain = $this->domain;
         $new->source = $this->source;
+        $new->audit_id = $this->audit_id;
         return $new;
     }
 

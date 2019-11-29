@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCredentialsTable extends Migration
+class CreateWebTechnologiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateCredentialsTable extends Migration
      */
     public function up()
     {
-        Schema::create('credentials', function (Blueprint $table) {
+        Schema::create('web_technologies', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('audit_id');
-            $table->string('username');
-            $table->string('password');
-            $table->string('domain');
+            $table->uuid('service_id');
+            $table->string('name');
+            $table->string('icon');
             $table->uuid('from_job_id');
-            $table->string('source');
-            $table->foreign('audit_id')->references('id')->on('audits')->onDelete('cascade');
+            $table->unique(['name', 'service_id']);
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ class CreateCredentialsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('credentials');
+        Schema::dropIfExists('web_technologies');
     }
 }

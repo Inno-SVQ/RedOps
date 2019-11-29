@@ -3,7 +3,6 @@ import shodan
 import socket
 import ipaddress
 import time
-from getpass import getpass
 from modules.Generics.Service import Service
 from modules.Generics.Domain import Domain
 from modules.Generics.IP import IP
@@ -11,51 +10,46 @@ from modules.Generics.BaseModule import BaseModule
 
 class Module(BaseModule):
     def run(self, callback):
-        data = self.params["data"]
-        api_key = self.params["api_key"]
+        try:
+            api_key = self.params["SHODAN_APIKEY"]
 
-        shodanObj = Shodan(api_key, callback)
+            if api_key == "":
+                raise Exception("Invalid Shodan API KEY:")
 
-        for index, domain in enumerate(data):
-            if type(domain) == Domain:
-                ips=shodanObj.resDomain(domain.name)
+            shodanObj = Shodan(api_key, callback)
+            for index, domain in enumerate(self.params["data"]):
+                jsonStr=[]
+                if type(domain) == Domain:
+                    try:
+                        ips = socket.gethostbyname(domain.name)
+                    except socket.gaierror as e:
+                        # does not exists
+                        ips = None
+                elif type(domain) == IP:
+                    ips=domain.value
 
-            elif type(domain) == IP:
-                ips=domain.value
+                if ips!= None:
+                    res=shodanObj.searchServices(ips)
 
-            res=shodanObj.searchServices(ips)
+                    for i in res:
+                        jsonStr.append(i)
 
-            jsonStr=[]
+                    time.sleep(1)
 
-            for i in res:
-                jsonStr.append(i)
+                # In the last loop we want to finish the task in the server
+                if(index < len(self.params) - 1):
+                    callback.update(jsonStr)
+                    jsonStr = []
 
-            time.sleep(1)
-
-            # In the last loop we want to finish the task in the server
-            if(index < len(self.params) - 1):
-                callback.update(jsonStr)
-
-        callback.finish(jsonStr)
+            callback.finish(jsonStr)
+        except Exception as e:
+            callback.exception(e)
 
 class Shodan():
     def __init__(self,api,callback):
         self.api=shodan.Shodan(api)
         self.callback = callback
 
-    def resDomain(self,domain):
-        try:
-            ip=socket.gethostbyname(domain)
-
-            try:
-                ipaddress.IPv4Address(ip)
-            except ValueError:
-                pass
-
-        except socket.gaierror as e:
-            pass
-
-        return ip
 
     def searchServices(self,ip):
         list=[]

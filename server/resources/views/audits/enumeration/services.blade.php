@@ -72,7 +72,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a id="action-find-subdomains">Find mierdas</a></li>
+                        <li><a id="action-find-webtechnologies">Scan web technologies</a></li>
+                        <li><a id="show-modal-fuzz" data-toggle="modal" href="#modal-action-fuzz">Fuzz web directories</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="show-modal-delete" data-toggle="modal" href="#modal-action-delete">Delete</a></li>
                     </ul>
@@ -96,6 +97,32 @@
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     <button data-dismiss="modal" class="btn btn-danger" id="btn-delete-services"
                                             type="submit">Delete
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-action-fuzz" class="modal fade bs-modal-" tabindex="-1" role="dialog"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">Warning</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Directory fuzzing is a heavy task. This webservices will be fuzzed:</p>
+                                    <div id="services-to-fuzz">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button data-dismiss="modal" class="btn btn-warning" id="btn-fuzz-services"
+                                            type="submit">Go fuzzing
                                     </button>
                                 </div>
 
@@ -135,6 +162,43 @@
 
                 $('#action-find-subdomains').click(function () {
                     $.post('{{ route('ajax/enumeration/companies/findSubdomains', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(selectedItems),
+                    }).error().success();
+                });
+                $('#action-find-webtechnologies').click(function () {
+                    $.post('{{ route('ajax/enumeration/services/webtechnologies', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(selectedItems),
+                    }).error().success();
+                });
+                $('#btn-fuzz-services').click(function () {
+                    fuzzItems = []
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        for (var j = 0; j < dataT.length; j++) {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                                fuzzItems.push(dataT[i]['DT_RowId'])
+                            }
+                        }
+                    }
+                    $.post('{{ route('ajax/enumeration/services/fuzz', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(fuzzItems),
+                    }).error().success();
+                });
+                $('#show-modal-fuzz').click(function () {
+                    $("#services-to-fuzz").empty();
+                    dataT = $('#datatable-services').DataTable({retrieve: true}).data();
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        for (var j = 0; j < dataT.length; j++) {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                                $("#services-to-fuzz").append("<h5>" + dataT[j]['host'] + "</h5>");
+                            }
+                        }
+                    }
+                });
+                $('#action-fuzz-directories').click(function () {
+                    $.post('{{ route('ajax/enumeration/services/fuzz', $selectedAudit->id) }}', {
                         '_token': $('meta[name=csrf-token]').attr('content'),
                         data: JSON.stringify(selectedItems),
                     }).error().success();

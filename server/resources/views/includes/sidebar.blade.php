@@ -41,18 +41,36 @@
                 @if(isset($selectedAudit))
                     <h3>{{$selectedAudit->name}}</h3>
                     <ul class="nav side-menu">
-                        <li><a href="{{route('jobs', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Jobs <span class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
+                        <li><a href="{{route('jobs', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Jobs <span
+                                        class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
                         <li>
-                            <a><i class="fa fa-dot-circle-o"></i> Enumeration <span class="fa fa-chevron-down"></span></a>
+                            <a><i class="fa fa-dot-circle-o"></i> Enumeration <span
+                                        class="fa fa-chevron-down"></span></a>
                             <ul class="nav child_menu">
                                 <li>
-                                    <a href="{{route('companies', $selectedAudit->id)}}">Companies <span class="label label-default">{{count($selectedAudit->companies())}}</span></a>
+                                    <a href="{{route('companies', $selectedAudit->id)}}">Companies <span
+                                                class="label label-default">{{count($selectedAudit->companies())}}</span></a>
                                 </li>
                                 <li>
-                                    <a href="{{route('domains', $selectedAudit->id)}}">Hosts <span class="label label-default">{{count($selectedAudit->domains())}}</span></a>
+                                    <a href="{{route('domains', $selectedAudit->id)}}">Hosts <span
+                                                class="label label-default">{{count($selectedAudit->domains())}}</span></a>
                                 </li>
                                 <li>
-                                    <a href="{{route('services', $selectedAudit->id)}}">Services <span class="label label-default">{{count($selectedAudit->services())}}</span></a>
+                                    <a href="{{route('services', $selectedAudit->id)}}">Services <span
+                                                class="label label-default">{{count($selectedAudit->services())}}</span>
+                                    </a>
+                                    @if(isset($service))
+                                        <ul class="nav child_menu">
+                                            <li class="sub_menu"><a href="{{route('servicedetail', ['id' => $selectedAudit->id, 'serviceid' => $service->id])}}"><?php
+                                                    $title = $service->getDomain()->domain.':'.$service->port;
+                                                    if(strlen($title) > 20){
+                                                        echo substr($title,0,20).'...';
+                                                    } else {
+                                                        echo $title;
+                                                    }
+                                                    ?></a></li>
+                                        </ul>
+                                    @endif
                                 </li>
                                 <li>
                                     <a href="{{route('credentials', $selectedAudit->id)}}">Credentials </a>
