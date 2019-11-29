@@ -64,7 +64,8 @@ class Module(BaseModule):
             dnsDumpster = DNSDumpsterAPI().search(domain)
             # Get domains from all types of records
             for subdomain in dnsDumpster["dns_records"]["host"]:
-                result.append(Domain(None, subdomain["domain"], parentDomain, subdomain.get("ip", None)))
+                if domain in subdomain["domain"]:
+                    result.append(Domain(None, subdomain["domain"], parentDomain, subdomain.get("ip", None)))
         except Exception as e:
             # Log exceptions
             self.callback.exception(e)
