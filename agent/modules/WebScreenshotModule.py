@@ -6,13 +6,6 @@ import requests
 import base64
 import os
 
-'''
-apt install phantomjs xvfb
-git clone https://github.com/DistilledLtd/heimdall
-python3 setup.py install
-
-'''
-
 class Module(BaseModule):
     def run(self, callback):
         self.moduleName = "WFuzzModule"
@@ -24,9 +17,9 @@ class Module(BaseModule):
                     # Check if ssl or not
                     #TODO:CONTROLAR EXCEPCION
                     if(self.checkSSL(weburl.host, weburl.port)):
-                        screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
+                        screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=400, height=300)   
                     else:
-                        screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)             
+                        screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=400, height=300)             
                     # Send picture to server
                     self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
                     if(not self.params["DISABLE_MASTER_SERVER"]):
