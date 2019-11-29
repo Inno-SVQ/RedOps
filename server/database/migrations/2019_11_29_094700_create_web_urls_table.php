@@ -21,6 +21,7 @@ class CreateWebUrlsTable extends Migration
             $table->string('word_length');
             $table->string('char_length');
             $table->integer('statusCode');
+            $table->uuid('from_job_id');
             $table->unique(['service_id', 'path']);
             $table->timestamps();
         });

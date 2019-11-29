@@ -8,6 +8,7 @@ use App\Agent\Models\Domain;
 use App\Agent\Models\IP;
 use App\Agent\Models\Service;
 use App\Agent\Models\WebTechnology;
+use App\Agent\Models\WebUrl;
 use App\Audit;
 use App\Http\Controllers\Controller;
 use App\Job;
@@ -72,6 +73,10 @@ class JobsController extends Controller
         return new WebTechnology($data['name'], $data['icon'], $data['serviceId']);
     }
 
+    private function decodeWeburl($data){
+        return new WebUrl($data['serviceId'], $data['host'], $data['port'], $data['path'], $data['fileType'], $data['wordLength'], $data['charLength'], $data['statusCode']);
+    }
+
     private function decodeJSON(array $data, $audit){
 
         $result = array();
@@ -99,6 +104,10 @@ class JobsController extends Controller
 
             if($element['type'] == "__technology__"){
                 $result[] = self::decodeTechnology($element, $audit);
+            }
+
+            if($element['type'] == "__weburl__"){
+                $result[] = self::decodeWeburl($element, $audit);
             }
         }
 
@@ -151,6 +160,10 @@ class JobsController extends Controller
 
         if(in_array('App\\WebTechnology', $modelsAdded)) {
             event(new WsMessage($owner->rid, 'addedTechnologies', json_encode($data)));
+        }
+
+        if(in_array('App\\WebUrl', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedWeburls', json_encode($data)));
         }
 
         if($data['finished'] === true) {
