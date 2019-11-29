@@ -26,12 +26,6 @@
             <div class="menu_section">
                 <h3>Menu</h3>
                 <ul class="nav side-menu">
-                    <li>
-                        <a href="{{route('home')}}">
-                            <i class="fa fa-laptop"></i>
-                            Dashboard
-                        </a>
-                    </li>
                     <li><a href="{{route('audits')}}"><i
                                     class="fa fa-home {{Request::path() == 'audits/*' ? 'current-page': ''}}"></i>
                             Audits </a></li>
@@ -41,8 +35,7 @@
                 @if(isset($selectedAudit))
                     <h3>{{$selectedAudit->name}}</h3>
                     <ul class="nav side-menu">
-                        <li><a href="{{route('auditDetail', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Dashboard <span
-                                        class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
+                        <li><a href="{{route('auditDetail', $selectedAudit->id)}}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
                         <li><a href="{{route('jobs', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Jobs <span
                                         class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
                         <li>
