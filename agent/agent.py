@@ -11,7 +11,7 @@ import logging
 import requests
 import atexit
 import os
-
+import string
 
 # We load the .env files with the configuration of the agent.
 try:
@@ -109,7 +109,7 @@ def finishJob(data, id):
         app.logger.debug("----------------------------Response from master for JOB {} FINISH----------------------------\n{}".format(id, r.text))
     
 def startJob(moduleName, id, data, spawn_process=False):
-        #TODO: Maybe path traversal?
+             
         module = loadModule("modules/{}".format(moduleName))
         # Add API key if needed
         
@@ -139,6 +139,12 @@ def jobs():
 
         if(requestJSON["id"] in runningJobs.keys()):
             return {"status": "A job with the same id is already running..."}
+
+        # Check for invalid characters in module name
+        for character in requestJSON["module"]:
+            if character not in string.ascii_letters:
+                app.logger.debug("Invalid Module Name: {}".format(requestJSON["module"]))
+                return jsonify({'result':'Invalid Module Name'})
 
         if(configJSON["ONE_THREAD"]):
             # El modo debug usa solo un hilo para asi poder ver los errores en consola
