@@ -21,7 +21,7 @@ class Module(BaseModule):
                     extension = None
                     if("." in newPath):
                         extension = newPath.split(".")[-1]
-                    self.callback.update(WebURL(weburl.serviceId, weburl.host, weburl.port, newPath, extension, r.words, r.chars, r.code))
+                    self.callback.update([WebURL(weburl.serviceId, weburl.host, weburl.port, newPath, extension, r.words, r.chars, r.code)])
             else:
                 hcCodes = [self.detectErrorCode(weburl.host, weburl.port, False)] # List for future manual setting
                 for r in wfuzz.fuzz(url="http://{}:{}{}/FUZZ".format(weburl.host, weburl.port, weburl.path), hc=hcCodes, payloads=[("file",dict(fn="wordlists/words.txt"))]):
@@ -30,7 +30,7 @@ class Module(BaseModule):
                     extension = None
                     if("." in newPath):
                         extension = newPath.split(".")[-1]
-                    self.callback.update(WebURL(weburl.serviceId, weburl.host, weburl.port, newPath, extension, r.words, r.chars, r.code))        # End JOB
+                    self.callback.update([WebURL(weburl.serviceId, weburl.host, weburl.port, newPath, extension, r.words, r.chars, r.code)])        # End JOB
         self.callback.finish(list())
 
     def checkSSL(self, domain, port):
