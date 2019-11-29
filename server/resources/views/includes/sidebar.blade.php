@@ -41,6 +41,8 @@
                 @if(isset($selectedAudit))
                     <h3>{{$selectedAudit->name}}</h3>
                     <ul class="nav side-menu">
+                        <li><a href="{{route('auditDetail', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Dashboard <span
+                                        class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
                         <li><a href="{{route('jobs', $selectedAudit->id)}}"><i class="fa fa-sitemap"></i> Jobs <span
                                         class="label label-default">{{count($selectedAudit->jobs())}}</span></a></li>
                         <li>

@@ -90,6 +90,8 @@ class Audit extends UuidModel
                 }
             }
         }
+        asort($webtechonolgies);
+        $webtechonolgies = array_reverse($webtechonolgies);
         return $webtechonolgies;
     }
 
