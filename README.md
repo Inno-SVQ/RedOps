@@ -25,7 +25,7 @@ RedOps consists on three main parts:
 * Agents: An agent is a piece of software that acts as an executor of the jobs queued by the audit in order to do some tasks. In order to execute these tasks, an agent invokes modules to execute
 * Modules: A module is a simple script that executes a jobs and returns some objects found during the execution.
 
-[![Architecture](https://github.com/Inno-SVQ/RedOps/blob/master/architecture.jpg)](https://github.com/Inno-SVQ/RedOps/blob/master/architecture.jpg)
+[![Architecture](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/architecture.jpg)](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/architecture.jpg)
 
 
 ## Requirements
