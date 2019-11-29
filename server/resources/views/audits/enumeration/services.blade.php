@@ -203,7 +203,7 @@
                     fuzzItems = []
                     for (var i = 0; i < selectedItems.length; i++) {
                         for (var j = 0; j < dataT.length; j++) {
-                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && (dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https')) {
                                 fuzzItems.push(dataT[i]['DT_RowId'])
                             }
                         }
@@ -217,7 +217,7 @@
                     screenshotItems = []
                     for (var i = 0; i < selectedItems.length; i++) {
                         for (var j = 0; j < dataT.length; j++) {
-                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && (dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https')) {
                                 screenshotItems.push(dataT[i]['DT_RowId'])
                             }
                         }
@@ -232,7 +232,7 @@
                     dataT = $('#datatable-services').DataTable({retrieve: true}).data();
                     for (var i = 0; i < selectedItems.length; i++) {
                         for (var j = 0; j < dataT.length; j++) {
-                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && (dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https')) {
                                 $("#services-to-fuzz").append("<h5>" + dataT[j]['host'] + "</h5>");
                             }
                         }
@@ -243,7 +243,7 @@
                     dataT = $('#datatable-services').DataTable({retrieve: true}).data();
                     for (var i = 0; i < selectedItems.length; i++) {
                         for (var j = 0; j < dataT.length; j++) {
-                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && (dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https')) {
                                 $("#services-to-screenshot").append("<h5>" + dataT[j]['host'] + "</h5>");
                             }
                         }
