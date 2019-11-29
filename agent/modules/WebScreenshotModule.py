@@ -28,8 +28,7 @@ class Module(BaseModule):
                 # Send picture to server
                 self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
                 if(not self.params["DISABLE_MASTER_SERVER"]):
-                    r = requests.post("https://{}/job/screenshotUpload".format(self.params["MASTER_DOMAIN"]), files={"picture": open(screenshot.path, "rb"), "service_id": weburl.serviceId,
-                    "path": weburl.path, "jobId": self.params["jobId"]})
+                    r = requests.post("https://{}/api/job/screenshotUpload/{}".format(self.params["MASTER_DOMAIN"], weburl.serviceId), files={"picture": open(screenshot.path, "rb")})
                     self.callback.debug("----------------------------Response from master for JOB {} UPDATE----------------------------\n{}".format(self.params["jobId"], r.text))
                     
                 # Delete picture
