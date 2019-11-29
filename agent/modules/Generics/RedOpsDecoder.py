@@ -4,6 +4,7 @@ from modules.Generics.Company import Company
 from modules.Generics.Service import Service
 from modules.Generics.Credential import Credential
 from modules.Generics.Technology import Technology
+from modules.Generics.WebURL import WebURL
 
 def RedOpsDecoder(p):
     if(p.get("type", None) == "__ip__"):
@@ -18,4 +19,6 @@ def RedOpsDecoder(p):
         return Credential(p["username"], p["password"], p["domain"], p["source"])
     if(p.get("type", None) == "__technology__"):
         return Technology(p["serviceId"], p["name"], p["icon"])
+    if(p.get("type", None) == "__weburl__"):
+        return WebURL(p["serviceId"], p["host"], p["port"], p["path"])
     return p
