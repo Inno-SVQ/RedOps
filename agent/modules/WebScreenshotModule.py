@@ -24,16 +24,14 @@ class Module(BaseModule):
                 if(self.checkSSL(weburl.host, weburl.port)):
                     screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
                 else:
-                    screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=800, height=600)
-                # Screenshot to base64
-                
-                # Delete picture
-                os.remove(screenshot.path)
+                    screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=800, height=600)             
                 # Send picture to server
                 self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
                 if(not self.params["DISABLE_MASTER_SERVER"]):
                     requests.post("https://{}/job/screenshotUpload".format(self.params["MASTER_DOMAIN"]), files={"picture": open(screenshot.path, "rb"), "service_id": weburl.serviceId,
                     "path": weburl.path, "jobId": self.params["jobId"]})
+                # Delete picture
+                os.remove(screenshot.path)
 
         except Exception as e:
             self.callback.exception(e)
