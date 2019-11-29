@@ -23,6 +23,13 @@ class Module(BaseModule):
                     self.securityTrailsBasic(domain.name, domain.id)
                 self.dnsDumpster(domain.name, domain.id)
                 self.crtshSearch(domain.name, domain.id)
+
+        # Second loop for bruteforce as is slower
+        # In the future it will improved with threading
+        for domain in self.params["data"]:
+            if type(domain) == Domain:
+                self.bruteForce(domain.name, domain.id)
+
         # End JOB
         self.callback.finish(list())
 
@@ -126,4 +133,29 @@ class Module(BaseModule):
         if len(result) > 0:
             self.callback.update(result)
 
+    def bruteForce(self, domain, parentDomain):
+        result = []
+        try:
+            with open("wordlists/words.txt") as f:
+                for line in f:
+                    # Remove newline
+                    line = line.rstrip()
+                    subdomain = "{}.{}".format(line, domain)
+                    try:
+                        ip = socket.gethostbyname(subdomain)
+                    except socket.gaierror as e:
+                        ip = None
+                    except Exception as e:
+                        self.callback.exception(e)
+                    
+                    if ip != None:
+                        result.append(Domain(None, subdomain, parentDomain, ip))
+                    if len(result) > 10:
+                        # Update every 10
+                        self.callback.update(result)
+                        result = []
+        except Exception as e:
+            self.callback.exception(e)
+
+        self.callback.update(result)
     

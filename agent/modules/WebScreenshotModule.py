@@ -7,7 +7,7 @@ import base64
 import os
 
 '''
-npm install -g phantomjs
+apt install phantomjs xvfb
 git clone https://github.com/DistilledLtd/heimdall
 python3 setup.py install
 
@@ -19,19 +19,23 @@ class Module(BaseModule):
         # Callback access
         self.callback =callback
         try:
-            for weburl in self.params:
+            for weburl in self.params["data"]:
                 # Check if ssl or not
                 if(self.checkSSL(weburl.host, weburl.port)):
-                    screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=1440, height=900)   
+                    screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
                 else:
-                    screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=1440, height=900)
+                    screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=800, height=600)
                 # Screenshot to base64
-                with open(screenshot.path, "rb") as image_file:
-                    encoded_picture = str(base64.b64encode(image_file.read()))
+                
                 # Delete picture
                 os.remove(screenshot.path)
                 # Send picture to server
-                self.callback.update(WebScreenshot(weburl.serviceId, weburl.path, encoded_picture))
+                if(not self.params["DISABLE_MASTER_SERVER"]):
+                    requests.post("https://{}/job/screenshotUpload".format(self.params["MASTER_DOMAIN"]), files={"picture": open(screenshot.path, "rb"), "service_id": weburl.serviceId,
+                    "path": weburl.path, "jobId": self.params["jobId"]})
+                else:
+                    self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, encoded_picture)))
+
         except Exception as e:
             self.callback.exception(e)
         self.callback.finish(list())
