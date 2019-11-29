@@ -12,32 +12,35 @@
 
         <div class="x_panel">
             <div class="x_title">
-                <h2>{{$service->application_protocol}}://{{$service->getDomain()->domain}}:{{$service->port}}<small></small></h2>
+                <h2>{{$service->application_protocol}}://{{$service->getDomain()->domain}}
+                    :{{$service->port}}<small></small></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
 
 
-                @if(count($service->technologies()) > 0)
-                    <div class="row">
-                        <div class="col-md-9 col-sm-9">
-                            <div class="dashboard_graph">
-                                <div class="row x_title">
-                                    <div class="col-md-6">
-                                        <h3>Technologies used in webservice</h3>
-                                    </div>
+                <div class="row">
+                    <div class="col-md-9 col-sm-9">
+                        <div class="dashboard_graph">
+                            <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Technologies used in webservice</h3>
                                 </div>
-                                <ul class="quick-list">
+                            </div>
+                            <ul class="quick-list technologies-list" id="technologies-list-{{$service->id}}">
+                                @if(count($service->technologies()) > 0)
                                     @foreach($service->technologies() as $technology)
                                         <li>
                                             <img src="https://s3.dualstack.ap-southeast-2.amazonaws.com/assets.wappalyzer.com/images/icons/{{$technology->icon}}"
-                                                 alt="Carbon Ads" width="24" height="24"> {{$technology->name}}</li>
+                                                 width="24" height="24"> {{$technology->name}}</li>
                                     @endforeach
-                                </ul>
-                            </div>
+                                @else
+                                    <button id="fetch-technologies" type="button" class="btn btn-primary">Fetch used technologies</button>
+                                @endif
+                            </ul>
                         </div>
                     </div>
-                @endif
+                </div>
 
                 <div class="clearfix"></div>
 
@@ -126,6 +129,12 @@
                         checkActions();
                     }).error().success();
                 });
+                $('#fetch-technologies').click(function () {
+                    $.post('{{ route('ajax/enumeration/services/webtechnologies', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(['{{$service->id}}']),
+                    }).error().success();
+                });
                 $('#show-modal-delete').click(function () {
                     $("#services-to-delete").empty();
                     dataT = $('#datatable-services').DataTable({retrieve: true}).data();
@@ -187,6 +196,17 @@
                         });
                     }
                 });
+
+                function addTechnologies(data) {
+                    if($('#technologies-list-{{$service->id}}').length) {
+                        $('#technologies-list-{{$service->id}}').empty();
+                        for(let i = 0; i < data.data.length; i++){
+                            if(data.data[i].type === '__technology__' && data.data[i].serviceId === '{{$service->id}}') {
+                                $("#technologies-list-{{$service->id}}").append('<li><img src="https://s3.dualstack.ap-southeast-2.amazonaws.com/assets.wappalyzer.com/images/icons/' + data.data[i].icon + '"width="24" height="24"> ' +  data.data[i].name + '</li>');
+                            }
+                        }
+                    }
+                }
 
             </script>
 

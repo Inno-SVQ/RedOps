@@ -21,7 +21,7 @@
         <!-- Nprogress -->
         <link href="{{ asset("css/nprogress.css") }}" rel="stylesheet">
         <!-- Datatables -->
-        <link href="{{ asset("css/datatables/jquery.dataTables.min.css") }}" rel="stylesheet">
+        <link href="{{ asset("css/datatables/jquery.dataTableçs.min.css") }}" rel="stylesheet">
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.buttons.css" rel="stylesheet">
@@ -131,6 +131,12 @@
                 $('#datatable-credentials').DataTable({retrieve: true}).ajax.reload(null, false);
             }
 
+            function addedTechnologies(data) {
+                if($('.technologies-list').length) {
+                    addTechnologies(data)
+                }
+            }
+
             function notification(options) {
                 new PNotify({
                     title: options.title,
@@ -170,6 +176,9 @@
                         break;
                     case 'notification':
                         notification(content);
+                        break;
+                    case 'addedTechnologies':
+                        addedTechnologies(content);
                         break;
                 }
             });

@@ -149,6 +149,10 @@ class JobsController extends Controller
             event(new WsMessage($owner->rid, 'addedService', json_encode($data)));
         }
 
+        if(in_array('App\\WebTechnology', $modelsAdded)) {
+            event(new WsMessage($owner->rid, 'addedTechnologies', json_encode($data)));
+        }
+
         if($data['finished'] === true) {
             Utils::sendNotificationUser($job->getOwner()->rid, 'Job finished', \App\Http\Controllers\JobsController::getHumanModuleName($job->module).' job has been finished.', 'success');
         }
