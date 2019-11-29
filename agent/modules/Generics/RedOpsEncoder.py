@@ -5,6 +5,7 @@ from modules.Generics.Company import Company
 from modules.Generics.Service import Service
 from modules.Generics.Credential import Credential
 from modules.Generics.Technology import Technology
+from modules.Generics.WebURL import WebURL
 
 class RedOpsEncoder(json.JSONEncoder):
     # We override de default function of JSONEncoder
@@ -29,7 +30,12 @@ class RedOpsEncoder(json.JSONEncoder):
         if(isinstance(obj, Credential)):
             return obj.toDict()
 
+        # Idem with Technology
         if(isinstance(obj, Technology)):
+            return obj.toDict()
+
+        # Idem with WebURL
+        if(isinstance(obj, WebURL)):
             return obj.toDict()
 
         return json.JSONEncoder.default(self, obj)
