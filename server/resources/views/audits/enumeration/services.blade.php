@@ -73,7 +73,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <li><a id="action-find-webtechnologies">Scan web technologies</a></li>
-                        <li><a id="show-modal-fuzz" href="#modal-action-fuzz">Fuzz web directories</a></li>
+                        <li><a id="show-modal-fuzz" data-toggle="modal" href="#modal-action-fuzz">Fuzz web directories</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="show-modal-delete" data-toggle="modal" href="#modal-action-delete">Delete</a></li>
                     </ul>
@@ -115,14 +115,14 @@
                                     <h4 class="modal-title" id="myModalLabel">Warning</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Directory fuzzing is a heavy task. Only this webservices will be fuzzed:</p>
+                                    <p>Directory fuzzing is a heavy task. This webservices will be fuzzed:</p>
                                     <div id="services-to-fuzz">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button data-dismiss="modal" class="btn btn-danger" id="btn-delete-services"
-                                            type="submit">Go
+                                    <button data-dismiss="modal" class="btn btn-warning" id="btn-fuzz-services"
+                                            type="submit">Go fuzzing
                                     </button>
                                 </div>
 
@@ -172,13 +172,27 @@
                         data: JSON.stringify(selectedItems),
                     }).error().success();
                 });
+                $('#btn-fuzz-services').click(function () {
+                    fuzzItems = []
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        for (var j = 0; j < dataT.length; j++) {
+                            if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
+                                fuzzItems.push(dataT[i]['DT_RowId'])
+                            }
+                        }
+                    }
+                    $.post('{{ route('ajax/enumeration/services/fuzz', $selectedAudit->id) }}', {
+                        '_token': $('meta[name=csrf-token]').attr('content'),
+                        data: JSON.stringify(fuzzItems),
+                    }).error().success();
+                });
                 $('#show-modal-fuzz').click(function () {
                     $("#services-to-fuzz").empty();
                     dataT = $('#datatable-services').DataTable({retrieve: true}).data();
                     for (var i = 0; i < selectedItems.length; i++) {
                         for (var j = 0; j < dataT.length; j++) {
                             if (dataT[j]['DT_RowId'] === selectedItems[i] && dataT[j]['application_protocol'] === 'http' || dataT[j]['application_protocol'] === 'https') {
-                                $("#services-to-delete").append("<h5>" + dataT[j]['application_protocol'] + "://" + dataT[j]['host'] + ": " + dataT[j]['port'] + "/</h5>");
+                                $("#services-to-fuzz").append("<h5>" + dataT[j]['host'] + "</h5>");
                             }
                         }
                     }
