@@ -137,6 +137,19 @@
                 }
             }
 
+            function addedWebUrl(data) {
+                service_ids = [];
+                for(let i = 0; i < data.data.length; i++){
+                    if(!service_ids.includes(data.data[i].service_id)) {
+                        service_ids.push(data.data[i].service_id)
+                    }
+                }
+                for(let i = 0; i < service_ids.length; i++){
+                    $('#datatable-' + service_ids[i] + '-directories').DataTable({retrieve: true}).ajax.reload(null, false);
+                }
+
+            }
+
             function notification(options) {
                 new PNotify({
                     title: options.title,

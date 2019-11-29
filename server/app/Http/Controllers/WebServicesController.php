@@ -92,7 +92,7 @@ class WebServicesController extends Controller
         $weburlsAllowed = array();
         foreach ($services as $service) {
             if($service->getDomain()->parentCompany()->audit()->getOwner()->rid === Auth::user()->rid && ($service->application_protocol === 'http' || $service->application_protocol === 'https')) {
-                $webUrl = new WebUrl($service->id, $service->getDomain()->domain, $service->port, '/', '', '', 0, 0);
+                $webUrl = new WebUrl($service->id, $service->getDomain()->domain, $service->port, '', '', '', 0, 0);
                 array_push($weburlsAllowed, $webUrl);
             }
         }
@@ -120,6 +120,29 @@ class WebServicesController extends Controller
 
         return $json;
 
+    }
+
+    public function directories($id, $serviceid) {
+        $selectedService = Service::where('id', $serviceid)->firstOrFail();
+
+        if($selectedService->getDomain()->parentCompany()->audit()->id !== $id || $selectedService->getDomain()->parentCompany()->audit()->getOwner()->rid !== Auth::user()->rid) {
+            return abort(404);
+        }
+
+        $webUrls = DB::table('web_urls')
+            ->where('service_id', $selectedService->id)
+            ->select(['id', 'path', 'file_type', 'word_length', 'char_length', 'status_code']);
+
+        return Datatables::of($webUrls)
+            ->addColumn('checkbox', function ($webUrl) {
+                return '<td><input class="checkbox-item" id="' . get_object_vars($webUrl)['id'] . '" type="checkbox" aria-label="...">';
+            })
+            ->addColumn('DT_RowId', function ($webUrl) {
+                return get_object_vars($webUrl)['id'];
+            })
+            ->rawColumns(['checkbox'])
+            ->removeColumn('id')
+            ->make(true);
     }
 
 }

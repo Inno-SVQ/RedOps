@@ -17,10 +17,10 @@ class CreateWebUrlsTable extends Migration
             $table->uuid('id');
             $table->uuid('service_id');
             $table->string('path');
-            $table->string('file_type');
-            $table->string('word_length');
-            $table->string('char_length');
-            $table->integer('statusCode');
+            $table->string('file_type')->nullable();
+            $table->integer('word_length')->nullable();
+            $table->integer('char_length')->nullable();
+            $table->integer('status_code')->nullable();
             $table->uuid('from_job_id');
             $table->unique(['service_id', 'path']);
             $table->timestamps();

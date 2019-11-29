@@ -74,7 +74,7 @@ class JobsController extends Controller
     }
 
     private function decodeWeburl($data){
-        return new WebUrl($data['serviceId'], $data['host'], $data['port'], $data['path'], $data['fileType'], $data['wordLength'], $data['charLength'], $data['statusCode']);
+        return new WebUrl($data['service_id'], $data['host'], $data['port'], $data['path'], $data['file_type'], $data['word_length'], $data['char_length'], $data['status_code']);
     }
 
     private function decodeJSON(array $data, $audit){

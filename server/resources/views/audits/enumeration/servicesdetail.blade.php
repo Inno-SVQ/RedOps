@@ -101,6 +101,9 @@
                         <th><input type="checkbox" id="checkbox-all" aria-label="..."></th>
                         <th>Path</th>
                         <th>Type</th>
+                        <th>Word length</th>
+                        <th>Char length</th>
+                        <th>Return code</th>
                     </tr>
                     </thead>
                 </table>
@@ -169,24 +172,23 @@
                     }).error().success();
                 });
                 $(document).ready(function () {
-                    if ($('#datatable-services').length) {
-                        table = $('#datatable-services').DataTable({
+                    if ($('#datatable-{{$service->id}}-directories').length) {
+                        table = $('#datatable-{{$service->id}}-directories').DataTable({
                             serverSide: true,
                             processing: true,
                             searchDelay: 400,
-                            ajax: '{{ route('ajax/enumeration/services', $selectedAudit) }}',
+                            ajax: '{{ route('ajax/enumeration/services/directories', ['id' => $selectedAudit->id, 'serviceid' => $service->id]) }}',
                             columns: [
                                 {data: "checkbox", name: "checkbox", orderable: false, searchable: false},
-                                {data: "host", name: "host"},
-                                {data: "protocol", name: "protocol"},
-                                {data: "port", name: "port"},
-                                {data: "application_protocol", name: "application_protocol"},
-                                {data: "product", name: "product"},
-                                {data: "version", name: "version"}
+                                {data: "path", name: "path"},
+                                {data: "file_type", name: "file_type"},
+                                {data: "word_length", name: "word_length"},
+                                {data: "char_length", name: "char_length"},
+                                {data: "status_code", name: "status_code"},
                             ],
                             aoColumnDefs: [
-                                {'bSortable': true, 'aTargets': [1, 2, 3, 4, 5, 6]},
-                                {'bSearchable': true, 'aTargets': [1, 2, 3, 4, 5, 6]}
+                                {'bSortable': true, 'aTargets': [1, 2, 3, 4, 5]},
+                                {'bSearchable': true, 'aTargets': [1, 2, 3, 4, 5]}
                             ],
                             drawCallback: function () {
                                 for (i = 0; i < selectedItems.length; i++) {
