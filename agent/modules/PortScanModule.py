@@ -10,6 +10,7 @@ from modules.Generics.IP import IP
 from modules.Generics.Service import Service
 import nmap
 import socket
+import os
 
 class Module(BaseModule):
     def run(self, callback):
@@ -41,7 +42,11 @@ class Module(BaseModule):
 
             if(self.params["options"]["mode"] == "TCP"):
                 # We update every time a host is scan
-                nm.scan(hosts=hosts, arguments='-sS -sV -Pn', ports=ports, callback=self.update)
+                # Detect if ROOT mode to launch SYN scan
+                if(os.environ.get('NMAP_PRIVILEGED') != None):
+                    nm.scan(hosts=hosts, arguments='-sS -sV -Pn', ports=ports, callback=self.update)
+                else:
+                    nm.scan(hosts=hosts, arguments='-sT -sV -Pn', ports=ports, callback=self.update)
                 # In the last loop we want to finish the task in the server
             elif(self.params["options"]["mode"] == "UDP"):
                 nm.scan(hosts=hosts, arguments='-sU -Pn', ports=ports, callback=self.update)
