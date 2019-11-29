@@ -149,6 +149,72 @@ class Audit extends UuidModel
             ->get();
     }
 
+    public function getDomainInsertEvents() {
+        $result = array();
+
+        for ($x = 0; $x < 24; $x++) {
+            $date_start = new \DateTime();
+            $date_end = new \DateTime();
+            $date_start->modify('-'.$x.' hours');
+            $date_end->modify('-'.($x + 1).' hours');
+            $formatted_date_start = $date_start->format('Y-m-d H:i:s');
+            $formatted_date_end = $date_end->format('Y-m-d H:i:s');
+            $items = DB::table('insert_events')
+                ->where('audit_id', $this->id)
+                ->where('type', '__domain__')
+                ->whereDate('created_at', '>', $formatted_date_end)
+                ->whereDate('created_at', '<', $formatted_date_start)
+                ->count();
+            array_push($result, $items);
+        }
+
+        return $result;
+    }
+
+    public function getServiceInsertEvents() {
+        $result = array();
+
+        for ($x = 0; $x < 24; $x++) {
+            $date_start = new \DateTime();
+            $date_end = new \DateTime();
+            $date_start->modify('-'.$x.' hours');
+            $date_end->modify('-'.($x +1).' hours');
+            $formatted_date_start = $date_start->format('Y-m-d H:i:s');
+            $formatted_date_end = $date_end->format('Y-m-d H:i:s');
+            $items = DB::table('insert_events')
+                ->where('audit_id', $this->id)
+                ->where('type', '__service__')
+                ->whereDate('created_at', '>', $formatted_date_end)
+                ->whereDate('created_at', '<', $formatted_date_start)
+                ->count();
+            array_push($result, $items);
+        }
+
+        return $result;
+    }
+
+    public function getCredntialsInsertEvents() {
+        $result = array();
+
+        for ($x = 0; $x < 24; $x++) {
+            $date_start = new \DateTime();
+            $date_end = new \DateTime();
+            $date_start->modify('-'.$x.' hours');
+            $date_end->modify('-'.($x +1).' hours');
+            $formatted_date_start = $date_start->format('Y-m-d H:i:s');
+            $formatted_date_end = $date_end->format('Y-m-d H:i:s');
+            $items = DB::table('insert_events')
+                ->where('audit_id', $this->id)
+                ->where('type', '__credential__')
+                ->whereDate('created_at', '>', $formatted_date_end)
+                ->whereDate('created_at', '<', $formatted_date_start)
+                ->count();
+            array_push($result, $items);
+        }
+
+        return $result;
+    }
+
     public function getOwner() {
         return User::where('id', $this->owner)->first();
     }

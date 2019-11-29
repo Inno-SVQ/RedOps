@@ -726,15 +726,19 @@
 
                 // The data for our dataset
                 data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    labels: ['23h. ago','22h. ago','21h. ago','20h. ago','19h. ago','18h. ago','17h. ago','16h. ago','15h. ago','14h. ago','13h. ago','12h. ago','11h. ago','10h. ago','9h. ago','8h. ago','7h. ago','6h. ago','5h. ago','4h. ago','3h. ago','2h. ago','1h. ago','0h. ago'],
                     datasets: [{
-                        label: 'Current jobs',
-                        backgroundColor: 'rgb(255,146,0)',
-                        data: []
-                    }, {
-                        label: 'Finished jobs',
-                        backgroundColor: 'rgb(0,121,32)',
-                        data: [0, 30, 5, 2, 2, 30, 100]
+                        label: 'Domains discovered',
+                        backgroundColor: 'rgba(53,152,219,0.43)',
+                        data: {{json_encode($selectedAudit->getDomainInsertEvents())}}
+                    },{
+                        label: 'Services discovered',
+                        backgroundColor: 'rgba(37,185,154,0.43)',
+                        data: {{json_encode($selectedAudit->getServiceInsertEvents())}}
+                    },{
+                        label: 'Leaked credentials discovered',
+                        backgroundColor: 'rgba(231,76,60,0.43)',
+                        data: {{json_encode($selectedAudit->getCredntialsInsertEvents())}}
                     }]
                 },
 

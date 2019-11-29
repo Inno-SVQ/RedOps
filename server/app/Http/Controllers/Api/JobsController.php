@@ -11,6 +11,7 @@ use App\Agent\Models\WebTechnology;
 use App\Agent\Models\WebUrl;
 use App\Audit;
 use App\Http\Controllers\Controller;
+use App\InsertEvents;
 use App\Job;
 use App\Models\User;
 use App\Events\CurrentJobsUpdate;
@@ -146,6 +147,11 @@ class JobsController extends Controller
             $model->from_job_id = $data['jobId'];
             try {
                 $model->save();
+                $ie = new InsertEvents();
+                $ie->audit_id = $job->audit_id;
+                $ie->type = $obj->type;
+                $ie->save();
+
                 array_push($modelsAdded, basename(get_class($model)));
             } catch (\Exception $exception) {
 
