@@ -15,7 +15,7 @@ class Module(BaseModule):
             # Check if ssl or not
             if(self.checkSSL(weburl.host, weburl.port)):
                 hcCodes = [self.detectErrorCode(weburl.host, weburl.port, True)] # List for future manual setting
-                for r in wfuzz.fuzz(url="https://{}:{}{}/FUZZ".format(weburl.host, weburl.port, weburl.path), hc=hcCodes, rleve=5, payloads=[("file",dict(fn="wordlists/words.txt"))]):
+                for r in wfuzz.fuzz(url="https://{}:{}{}/FUZZ".format(weburl.host, weburl.port, weburl.path), hc=hcCodes, rleve=5, payloads=[("file",dict(fn="wordlists/common.txt"))]):
                     # Mount response Object
                     newPath = "{}/{}".format(weburl.path, r.url.split("/")[-1])
                     extension = None
@@ -24,7 +24,7 @@ class Module(BaseModule):
                     self.callback.update([WebURL(weburl.serviceId, weburl.host, weburl.port, newPath, extension, r.words, r.chars, r.code)])
             else:
                 hcCodes = [self.detectErrorCode(weburl.host, weburl.port, False)] # List for future manual setting
-                for r in wfuzz.fuzz(url="http://{}:{}{}/FUZZ".format(weburl.host, weburl.port, weburl.path), hc=hcCodes, rleve=5, payloads=[("file",dict(fn="wordlists/words.txt"))]):
+                for r in wfuzz.fuzz(url="http://{}:{}{}/FUZZ".format(weburl.host, weburl.port, weburl.path), hc=hcCodes, rleve=5, payloads=[("file",dict(fn="wordlists/common.txt"))]):
                     # Mount response Object
                     newPath = "{}/{}".format(weburl.path, r.url.split("/")[-1])
                     extension = None
