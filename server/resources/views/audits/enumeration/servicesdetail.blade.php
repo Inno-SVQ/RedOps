@@ -18,7 +18,7 @@
             <div class="x_content">
 
 
-                @if(count($service->technologies()) > -10)
+                @if(count($service->technologies()) > 0)
                     <div class="row">
                         <div class="col-md-9 col-sm-9">
                             <div class="dashboard_graph">

@@ -61,16 +61,17 @@
                                     </a>
                                     @if(isset($service))
                                         <ul class="nav child_menu">
-                                            <li class="sub_menu"><a href="{{route('servicedetail', ['id' => $selectedAudit->id, 'serviceid' => $service->id])}}">{{$service->getDomain()->domain}}:{{$service->port}}</a></li>
+                                            <li class="sub_menu"><a
+                                                        href="{{route('servicedetail', ['id' => $selectedAudit->id, 'serviceid' => $service->id])}}">{{$service->getDomain()->domain}}
+                                                    :{{$service->port}}</a></li>
                                         </ul>
-                                @endif
-                                <li><a href="#level1_2">Level One</a>
+                                    @endif
+                                </li>
+                                <li>
+                                    <a href="{{route('credentials', $selectedAudit->id)}}">Credentials </a>
                                 </li>
                             </ul>
                         </li>
-                        </li>
-                        <li>
-                            <a href="{{route('credentials', $selectedAudit->id)}}">Credentials </a>
                         </li>
                     </ul>
                     </li>
