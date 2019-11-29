@@ -117,6 +117,8 @@ def startJob(moduleName, id, data, spawn_process=False):
             data = {"SECURITYTRAILS_APIKEY": configJSON["SECURITYTRAILS_APIKEY"], "data": data}
         elif(moduleName == "SearchServicesShodan"):
             data = {"SHODAN_APIKEY": configJSON["SHODAN_APIKEY"], "data": data}
+        elif(moduleName == "WebScreenshotModule"):
+            data = {"MASTER_DOMAIN": configJSON["MASTER_DOMAIN"], "DISABLE_MASTER_SERVER": configJSON["DISABLE_MASTER_SERVER"], "jobId": id, "data": data}
         
         module.params = data
         module.moduleName = moduleName
