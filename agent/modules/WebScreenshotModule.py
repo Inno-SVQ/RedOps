@@ -5,6 +5,7 @@ from heimdall import heimdall
 import requests
 import base64
 import os
+from PIL import Image
 
 class Module(BaseModule):
     def run(self, callback):
@@ -17,9 +18,15 @@ class Module(BaseModule):
                     # Check if ssl or not
                     #TODO:CONTROLAR EXCEPCION
                     if(self.checkSSL(weburl.host, weburl.port)):
-                        screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=400, height=300)   
+                        screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
                     else:
-                        screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=400, height=300)             
+                        screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)
+
+                    # Crop picture
+                    img = Image.open(screenshot.path)
+                    cropped = img.crop((0, 0, 800, 600)) 
+                    cropped.save(screenshot.path, "JPEG", optimize=True)
+
                     # Send picture to server
                     self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
                     if(not self.params["DISABLE_MASTER_SERVER"]):
