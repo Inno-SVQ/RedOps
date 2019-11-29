@@ -18,7 +18,7 @@ class Audit extends UuidModel
     public function getProgress()
     {
 
-        if($this->startDate > Carbon::now()) {
+        if ($this->startDate > Carbon::now()) {
             return 0;
         }
 
@@ -30,7 +30,7 @@ class Audit extends UuidModel
 
     public function companies()
     {
-        if($this->companies == null) {
+        if ($this->companies == null) {
             $this->companies = $this->hasMany('App\Company')->get();
         }
         return $this->companies;
@@ -38,7 +38,7 @@ class Audit extends UuidModel
 
     public function jobs()
     {
-        if($this->jobs == null) {
+        if ($this->jobs == null) {
             $this->jobs = $this->hasMany('App\Job')->orderBy('created_at', 'desc')->get();
         }
         return $this->jobs;
@@ -46,7 +46,7 @@ class Audit extends UuidModel
 
     public function openJobs()
     {
-        if($this->openJobs == null) {
+        if ($this->openJobs == null) {
             $this->openJobs = Job::where('audit_id', $this->id)
                 ->where('status', 0)
                 ->get();
@@ -78,12 +78,28 @@ class Audit extends UuidModel
         return $services;
     }
 
-    public function differentTechnologies() {
+    public function topServices()
+    {
+        $top = array();
+        foreach ($this->services() as $service) {
+            if (array_key_exists($service->port, $top)) {
+                $webtechonolgies[$service->port] = $top[$service->port] + 1;
+            } else {
+                $webtechonolgies[$service->name] = 1;
+            }
+        }
+        asort($top);
+        $top = array_reverse($top);
+        return $top;
+    }
+
+    public function differentTechnologies()
+    {
         $webtechonolgies = array();
         foreach ($this->services() as $service) {
             $technologies = $service->technologies();
-            foreach($technologies as $technology) {
-                if(array_key_exists($technology->name, $webtechonolgies)) {
+            foreach ($technologies as $technology) {
+                if (array_key_exists($technology->name, $webtechonolgies)) {
                     $webtechonolgies[$technology->name] = $webtechonolgies[$technology->name] + 1;
                 } else {
                     $webtechonolgies[$technology->name] = 1;
@@ -95,11 +111,13 @@ class Audit extends UuidModel
         return $webtechonolgies;
     }
 
-    public function getCredentials() {
+    public function getCredentials()
+    {
         return Credential::where('audit_id', $this->id)->get();
     }
 
-    public function getJobsByHours() {
+    public function getJobsByHours()
+    {
 
         $result = [];
         $items = DB::table('jobs')
@@ -118,7 +136,8 @@ class Audit extends UuidModel
         return json_encode($result);
     }
 
-    public function getDomainsAddedByHour() {
+    public function getDomainsAddedByHour()
+    {
         $result = [];
         $items = DB::table('domains')
             ->where('audit_id', $this->id)
@@ -135,7 +154,8 @@ class Audit extends UuidModel
         return json_encode($result);
     }
 
-    public function getLeakedCredentialsAddedByHour() {
+    public function getLeakedCredentialsAddedByHour()
+    {
         return DB::table('credentials')
             ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
             ->whereDate('created_at', '=', Carbon::now()->toDateString())
@@ -143,7 +163,8 @@ class Audit extends UuidModel
             ->get();
     }
 
-    public function getServicesAddedByHour() {
+    public function getServicesAddedByHour()
+    {
         return DB::table('services')
             ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
             ->whereDate('created_at', '=', Carbon::now()->toDateString())
@@ -151,14 +172,15 @@ class Audit extends UuidModel
             ->get();
     }
 
-    public function getDomainInsertEvents() {
+    public function getDomainInsertEvents()
+    {
         $result = array();
 
         for ($x = 0; $x < 24; $x++) {
             $date_start = new \DateTime();
             $date_end = new \DateTime();
-            $date_start->modify('-'.$x.' hours');
-            $date_end->modify('-'.($x + 1).' hours');
+            $date_start->modify('-' . $x . ' hours');
+            $date_end->modify('-' . ($x + 1) . ' hours');
             $formatted_date_start = $date_start->format('Y-m-d H:i:s');
             $formatted_date_end = $date_end->format('Y-m-d H:i:s');
             $items = DB::table('insert_events')
@@ -173,14 +195,15 @@ class Audit extends UuidModel
         return $result;
     }
 
-    public function getServiceInsertEvents() {
+    public function getServiceInsertEvents()
+    {
         $result = array();
 
         for ($x = 0; $x < 24; $x++) {
             $date_start = new \DateTime();
             $date_end = new \DateTime();
-            $date_start->modify('-'.$x.' hours');
-            $date_end->modify('-'.($x +1).' hours');
+            $date_start->modify('-' . $x . ' hours');
+            $date_end->modify('-' . ($x + 1) . ' hours');
             $formatted_date_start = $date_start->format('Y-m-d H:i:s');
             $formatted_date_end = $date_end->format('Y-m-d H:i:s');
             $items = DB::table('insert_events')
@@ -195,14 +218,15 @@ class Audit extends UuidModel
         return $result;
     }
 
-    public function getCredntialsInsertEvents() {
+    public function getCredntialsInsertEvents()
+    {
         $result = array();
 
         for ($x = 0; $x < 24; $x++) {
             $date_start = new \DateTime();
             $date_end = new \DateTime();
-            $date_start->modify('-'.$x.' hours');
-            $date_end->modify('-'.($x +1).' hours');
+            $date_start->modify('-' . $x . ' hours');
+            $date_end->modify('-' . ($x + 1) . ' hours');
             $formatted_date_start = $date_start->format('Y-m-d H:i:s');
             $formatted_date_end = $date_end->format('Y-m-d H:i:s');
             $items = DB::table('insert_events')
@@ -217,7 +241,8 @@ class Audit extends UuidModel
         return $result;
     }
 
-    public function getOwner() {
+    public function getOwner()
+    {
         return User::where('id', $this->owner)->first();
     }
 }
