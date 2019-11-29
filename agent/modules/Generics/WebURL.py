@@ -12,14 +12,14 @@ class WebURL:
     def toDict(self):
         return {
             "type": "__weburl__",
-            "serviceId": self.serviceId,
+            "service_id": self.serviceId,
             "host": self.host,
             "port": self.port,
             "path": self.path, # /admin/test
-            "fileType": self.fileType,
-            "wordLength": self.wordLength,
-            "charLength": self.charLength,
-            "statusCode": self.statusCode
+            "file_type": self.fileType,
+            "word_length": self.wordLength,
+            "char_length": self.charLength,
+            "status_code": self.statusCode
         }
 
     def __repr__(self):

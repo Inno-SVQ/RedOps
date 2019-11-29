@@ -18,7 +18,7 @@ def RedOpsDecoder(p):
     if(p.get("type", None) == "__credential__"):
         return Credential(p["username"], p["password"], p["domain"], p["source"])
     if(p.get("type", None) == "__technology__"):
-        return Technology(p["serviceId"], p["name"], p["icon"])
+        return Technology(p["service_id"], p["name"], p["icon"])
     if(p.get("type", None) == "__weburl__"):
-        return WebURL(p["serviceId"], p["host"], p["port"], p["path"])
+        return WebURL(p["service_id"], p["host"], p["port"], p["path"])
     return p
