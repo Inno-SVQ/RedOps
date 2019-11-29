@@ -300,6 +300,7 @@
                 $(document).ready(function () {
                     if ($('#datatable-services').length) {
                         table = $('#datatable-services').DataTable({
+                            dom: 'lBfrtip',
                             serverSide: true,
                             processing: true,
                             searchDelay: 400,

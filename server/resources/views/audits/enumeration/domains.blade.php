@@ -265,6 +265,7 @@
                 $(document).ready(function () {
                     if ($('#datatable-domains').length) {
                         table = $('#datatable-domains').DataTable({
+                            dom: 'lBfrtip',
                             serverSide: true,
                             processing: true,
                             searchDelay: 400,

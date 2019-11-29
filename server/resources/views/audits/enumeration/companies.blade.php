@@ -177,6 +177,7 @@
                 $(document).ready(function () {
                     if($('#datatable-companies').length) {
                         table = $('#datatable-companies').DataTable({
+                            dom: 'lBfrtip',
                             serverSide: true,
                             processing: true,
                             searchDelay: 400,

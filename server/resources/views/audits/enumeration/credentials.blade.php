@@ -169,6 +169,7 @@
                 $(document).ready(function () {
                     if ($('#datatable-credentials').length) {
                         table = $('#datatable-credentials').DataTable({
+                            dom: 'lBfrtip',
                             serverSide: true,
                             processing: true,
                             searchDelay: 400,
