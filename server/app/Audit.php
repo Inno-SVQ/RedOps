@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Ramsey\Uuid\Uuid;
+use DB;
 
 class Audit extends UuidModel
 {
@@ -75,6 +76,77 @@ class Audit extends UuidModel
             }
         }
         return $services;
+    }
+
+    public function differentTechnologies() {
+        $webtechonolgies = array();
+        foreach ($this->services() as $service) {
+            $technologies = $service->technologies();
+            foreach($technologies as $technology) {
+                if(array_key_exists($technology->name, $webtechonolgies)) {
+                    $webtechonolgies[$technology->name] = $webtechonolgies[$technology->name] + 1;
+                } else {
+                    $webtechonolgies[$technology->name] = 1;
+                }
+            }
+        }
+        return $webtechonolgies;
+    }
+
+    public function getCredentials() {
+        return Credential::where('audit_id', $this->id)->get();
+    }
+
+    public function getJobsByHours() {
+
+        $result = [];
+        $items = DB::table('jobs')
+            ->where('audit_id', $this->id)
+            ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
+            ->whereDate('created_at', '=', Carbon::now()->toDateString())
+            ->groupBy('hour')
+            ->get();
+
+        for ($x = 0; $x < count($items); $x++) {
+            array_push($result, $items[$x]->count);
+        }
+
+        dd($items);
+
+        return json_encode($result);
+    }
+
+    public function getDomainsAddedByHour() {
+        $result = [];
+        $items = DB::table('domains')
+            ->where('audit_id', $this->id)
+            ->union('')
+            ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
+            ->whereDate('created_at', '=', Carbon::now()->toDateString())
+            ->groupBy('hour')
+            ->get();
+
+        for ($x = 0; $x < count($items); $x++) {
+            array_push($result, $items[$x]->count);
+        }
+
+        return json_encode($result);
+    }
+
+    public function getLeakedCredentialsAddedByHour() {
+        return DB::table('credentials')
+            ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
+            ->whereDate('created_at', '=', Carbon::now()->toDateString())
+            ->groupBy('hour')
+            ->get();
+    }
+
+    public function getServicesAddedByHour() {
+        return DB::table('services')
+            ->select(DB::raw('count(*) as count, HOUR(created_at) as hour'))
+            ->whereDate('created_at', '=', Carbon::now()->toDateString())
+            ->groupBy('hour')
+            ->get();
     }
 
     public function getOwner() {

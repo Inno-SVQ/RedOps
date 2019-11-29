@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">
-                        <img src="/storage/{{($service->id)}}.jpeg" width="300">
+                        <img src="/storage/{{($service->id)}}.jpeg" onerror="this.onerror=null;this.src='/storage/not-found.png';" width="300">
                     </div>
                 </div>
 

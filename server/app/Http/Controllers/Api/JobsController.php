@@ -43,7 +43,7 @@ class JobsController extends Controller
             $id = $data['id'];
         }
         // We create the domain object
-        return new Domain($id, $data['name'], $data['parent']);
+        return new Domain($id, $data['name'], $data['parent'], $data['ip']);
     }
 
     private function decodeCompany($data){

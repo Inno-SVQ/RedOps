@@ -167,7 +167,7 @@
                                     <button id="add-company-cancel" type="button" class="btn btn-secondary"
                                             data-dismiss="modal">Close
                                     </button>
-                                    <button id="action-find-services"  type="button" class="btn btn-default">Find services
+                                    <button id="action-find-services"  type="button" class="btn btn-default" data-dismiss="modal">Find services
                                     </button>
                                 </div>
 
