@@ -2,7 +2,7 @@
 
 RedOps is a open source web based platform that allows you to perform and manage Red Teaming operations.
 
-## Features:
+## Features
 
   - Create audits (projects)
   - Add Companies to audit
@@ -43,6 +43,13 @@ For the correct operation of RedOps, the following requirements are necessary.
 | npm | https://www.npmjs.com/ |
 | Python 3.x | https://www.python.org/ |
 
+## Documentation
+You can check the following links for more information on the different installation parts:
+
+* [Server Installation][SI]
+* [Agent Installation][AI]
+* [Modules Installation][MI]
+
 Also, you can see our [Wiki][WK]. 
 
 License
@@ -52,6 +59,9 @@ License
 
 [LS]: <https://github.com/Inno-SVQ/RedOps/blob/master/LICENSE>
 [WK]: <https://github.com/Inno-SVQ/RedOps/wiki>
+[SI]: <https://github.com/Inno-SVQ/RedOps/wiki/Server-installation>
+[AI]: <https://github.com/Inno-SVQ/RedOps/wiki/Agent-installation>
+[MI]: <https://github.com/Inno-SVQ/RedOps/wiki/Module-Installation>
 
 
 
