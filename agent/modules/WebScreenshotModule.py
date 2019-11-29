@@ -5,13 +5,7 @@ from heimdall import heimdall
 import requests
 import base64
 import os
-
-'''
-apt install phantomjs xvfb
-git clone https://github.com/DistilledLtd/heimdall
-python3 setup.py install
-
-'''
+from PIL import Image
 
 class Module(BaseModule):
     def run(self, callback):
@@ -20,20 +14,30 @@ class Module(BaseModule):
         self.callback =callback
         try:
             for weburl in self.params["data"]:
-                # Check if ssl or not
-                if(self.checkSSL(weburl.host, weburl.port)):
-                    screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
-                else:
-                    screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), width=800, height=600)
-                # Screenshot to base64
-                
-                # Delete picture
-                os.remove(screenshot.path)
-                # Send picture to server
-                self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
-                if(not self.params["DISABLE_MASTER_SERVER"]):
-                    requests.post("https://{}/job/screenshotUpload".format(self.params["MASTER_DOMAIN"]), files={"picture": open(screenshot.path, "rb"), "service_id": weburl.serviceId,
-                    "path": weburl.path, "jobId": self.params["jobId"]})
+                try:
+                    # Check if ssl or not
+                    #TODO:CONTROLAR EXCEPCION
+                    if(self.checkSSL(weburl.host, weburl.port)):
+                        screenshot = heimdall.jpeg("https://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)   
+                    else:
+                        screenshot = heimdall.jpeg("http://{}:{}{}".format(weburl.host, weburl.port, weburl.path), optimize=True, width=800, height=600)
+
+                    # Crop picture
+                    img = Image.open(screenshot.path)
+                    cropped = img.crop((0, 0, 800, 600)) 
+                    cropped.save(screenshot.path, "JPEG", optimize=True)
+
+                    # Send picture to server
+                    self.callback.debug("----------------------------JOB {} update----------------------------\n{}".format(self.params["jobId"], WebScreenshot(weburl.serviceId, weburl.path, None)))
+                    if(not self.params["DISABLE_MASTER_SERVER"]):
+                        r = requests.post("https://{}/api/job/screenshotUpload/{}".format(self.params["MASTER_DOMAIN"], weburl.serviceId), files={"picture": open(screenshot.path, "rb")})
+                        self.callback.debug("----------------------------Response from master for JOB {} UPDATE----------------------------\n{}".format(self.params["jobId"], r.text))
+                        
+                    # Delete picture
+                    os.remove(screenshot.path)
+                except Exception as e:
+                    # Probably invalid service
+                    self.callback.exception(e)
 
         except Exception as e:
             self.callback.exception(e)
