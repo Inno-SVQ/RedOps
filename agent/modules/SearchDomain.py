@@ -14,13 +14,13 @@ class Module(BaseModule):
     def run(self, callback):
         app=SearchDomain(callback)
 
-        data = self.params["data"]
+        data = self.params
 
         for index, domain in enumerate(data):
-            res=app.joinDomains(domain.name)
+            res=app.joinDomains(domain.main_domain.name)
             jsonStr=[]
             for i in res:
-                jsonStr.append(Domain(i['domain'], domain.name, i['ip'],None))
+                jsonStr.append(Domain(None, i['domain'], domain.main_domain.id, i['ip']))
 
             # In the last loop we want to finish the task in the server
             if(index < len(self.params) - 1):
