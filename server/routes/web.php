@@ -11,7 +11,7 @@
 |
 */
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
 

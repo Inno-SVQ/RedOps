@@ -7,10 +7,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Ramsey\Uuid\Uuid;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+
+class User extends Authenticatable implements MustVerifyEmailContract
 {
-	use Notifiable;
-	use HasRoles;
+    use MustVerifyEmail;
+    use Notifiable;
+    use HasRoles;
 
 	public $jobNotifications = null;
 	

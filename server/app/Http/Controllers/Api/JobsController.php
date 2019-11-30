@@ -123,6 +123,10 @@ class JobsController extends Controller
 
     public function update(Request $request) {
 
+        if($request->header('RedOps-ApiKey') !== env('AGENT_API_KEY')) {
+            return abort(403);
+        }
+
         $data = $request->json()->all();
         $job = Job::where('id', $data['jobId'])->firstOrFail();
 
