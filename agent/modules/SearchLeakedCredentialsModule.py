@@ -18,7 +18,7 @@ class Module(BaseModule):
         session.proxies = {'http': 'socks5h://127.0.0.1:9050', 'https': 'socks5h://127.0.0.1:9050'}
 
         result = []
-        for domain in self.params:
+        for domain in self.params["data"]:
             if type(domain) == Domain:
                 # For every domain we try to get credentiales
                 try:
@@ -34,7 +34,7 @@ class Module(BaseModule):
 
     # From https://github.com/davidtavarez/pwndb/blob/master/pwndb.py
     def find_leaks(self, email, session):
-        url = "http://pwndb2am4tzkvold.onion/"
+        url = self.params["url"]
         username = email
         domain = "%"
 

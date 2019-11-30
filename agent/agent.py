@@ -119,7 +119,9 @@ def startJob(moduleName, id, data, spawn_process=False):
             data = {"SHODAN_APIKEY": configJSON["SHODAN_APIKEY"], "data": data}
         elif(moduleName == "WebScreenshotModule"):
             data = {"MASTER_DOMAIN": configJSON["MASTER_DOMAIN"], "DISABLE_MASTER_SERVER": configJSON["DISABLE_MASTER_SERVER"], "jobId": id, "data": data}
-        
+        elif(moduleName == "SearchLeakedCredentialsModule"):
+            data = {"url": configJSON["PWNDB_URL"], "data": data}
+
         module.params = data
         module.moduleName = moduleName
         if(spawn_process):
