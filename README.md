@@ -2,7 +2,7 @@
 
 RedOps is a open source web based platform that allows you to perform and manage Red Teaming operations.
 
-[![Architecture](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/Dashboard.png)](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/Dashboard.png)
+[![Dashboard](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/Dashboard_update.png)](https://github.com/Inno-SVQ/RedOps/blob/master/documentation/Dashboard_update.png)
 
 ## Features
 
