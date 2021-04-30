@@ -15,7 +15,7 @@ python-nmap==0.6.1
 requests==2.22.0
 soupsieve==1.9.4
 supervisor==4.1.0
-urllib3==1.25.6
+urllib3==1.25.8
 Werkzeug==0.16.0
 pycrtsh==0.1
 dnsdumpster
